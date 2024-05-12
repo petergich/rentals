@@ -22,6 +22,7 @@ class Photos(models.Model):
 class Tenants(models.Model):
     tenantid=models.IntegerField(unique=True)
     user=models.ForeignKey(User,on_delete=models.CASCADE)
+    cu
     def __str__(self):
         return self.user
     
