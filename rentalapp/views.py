@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from .models import * 
 from django.contrib.auth import login, authenticate
 from urllib.parse import urlparse
-
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -38,6 +38,7 @@ def ownersregister(request):
                 except:
                     return render(request,"ownerregister.html",{"message":"An error occured while trying to save1!"})
     return render(request,"ownerregister.html")
+
 def ownerslogin(request):
     referer = request.META.get('HTTP_REFERER')
     if referer:
@@ -65,6 +66,7 @@ def tenantslogin(request):
     return render(request,"tenantlogin.html")
 def tenantshome(request):
     return HttpResponse("tenant home")
+@login_required(login_url="ownerslogin")
 def ownershome(request):
     return HttpResponse("Owner home")
 # Create your views here.
