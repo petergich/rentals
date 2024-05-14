@@ -244,7 +244,7 @@ body iframe {
 </style>
 <div class="login-box">
   <h2>Owner Sign up</h2>
-  <form onsubmit="return validator()"action="{% url "ownersregister" %}" method="POST">
+  <form onsubmit="return validator()"action="{% url "tenantsregister" %}" method="POST">
     {% csrf_token %}
     <div class="user-box">
         <input type="text" name="username"required="">
@@ -257,10 +257,6 @@ body iframe {
       <div class="user-box">
         <input type="number" name="nid"required="">
         <label>National ID</label>
-      </div>
-      <div class="user-box">
-        <input type="text" name="phone"required="">
-        <label>Phone Number</label>
       </div>
     <div class="user-box">
       <input type="text" name="email"required="">
@@ -278,7 +274,7 @@ body iframe {
       Register
     </button>
     <div>
-      <p> Already have an account?<a href="{% url "ownerslogin" %}">login</a></p> 
+      <p> Already have an account?<a href="{% url "tenantslogin" %}">login</a></p> 
     </div>
   </form>
 </div>
@@ -287,7 +283,7 @@ body iframe {
   if(message){
       if(message==="Succesfully registered"){
           alert(message)
-          window.location.href="{% url "ownerslogin" %}"
+          window.location.href="{% url "tenantslogin" %}"
       }
       else{
       alert(message)
