@@ -9,7 +9,7 @@ class Owner(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     phone=models.CharField(max_length=50,unique=True)
     def __str__(self):
-        return self.user
+        return self.name
 class House(models.Model):
     name=models.CharField(max_length=254)
     cover_image = models.ImageField(upload_to='files/images/')

@@ -1,8 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import csv
 from django.contrib.auth.models import User
-from .models import *
+from .models import * 
+from django.contrib.auth import login, authenticate
+from urllib.parse import urlparse
 
 
 
@@ -37,6 +39,25 @@ def ownersregister(request):
                     return render(request,"ownerregister.html",{"message":"An error occured while trying to save1!"})
     return render(request,"ownerregister.html")
 def ownerslogin(request):
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        parsed_url = urlparse(referer)
+        # Get the path component of the URL
+        path = parsed_url.path
+        # Split the path by '/' and get the last part
+        last_part = path.strip('/').split('/')[-1]
+        if str(last_part)== "ownerregister":
+            return render(request, "ownerslogin.html", {"message": "Registered successfully"})
+    if request.method=="POST":
+        username=request.POST.get("username")
+        password=request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None :
+            if Owner.objects.filter(user=user).exists():
+                login(request, user)
+                return redirect('ownershome')  # Redirect to the home page after successful login
+        else:
+            return render(request, "sellerlogin.html", {"message": "Invalid credentials"})
     return render(request,"ownerlogin.html")
 def tenantsregister(request):
     return render(request,"tenantregister.html")
