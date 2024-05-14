@@ -68,8 +68,22 @@ def tenantshome(request):
     return HttpResponse("tenant home")
 @login_required(login_url="ownerslogin")
 def ownershome(request):
-    return HttpResponse("Owner home")
+    return render(request,"ownershome.html")
+@login_required(login_url="ownerslogin")
+def houses(request):
+    return render(request,"houses.html")
 # Create your views here.
+@login_required(login_url="ownerslogin")
+def tenants(request):
+    return render(request,"tenants.html")
+@login_required(login_url="ownerslogin")
+def rooms(request):
+    return render(request "rooms.html")
+@login_required(login_url="ownerslogin")
+def ownersprofile(request):
+    return render(request, "ownersprofile.html")
+def gallery(request):
+    return (request,"gallery.html")
 def locations():
 
 
