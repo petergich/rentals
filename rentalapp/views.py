@@ -24,16 +24,17 @@ def ownersregister(request):
         if User.objects.filter(username=username).exists():
             return render(request,"ownerregister.html",{"message":"An owner with the username already exists"})
         else:
-            #try:
+            try:
                 User.objects.create_user(username=username, email= email, password=passw)
                 owner=Owner(name=name,owner_id=o_id,user=User.objects.get(email=email),phone=phone)
                 owner.save()
-            # except:
-            #     try:
-            #         User.objects.get(email=email).delete
-            #         return render(request,"ownerregister.html",{"message":"An error occured while trying to save!"})
-            #     except:
-            #         return render(request,"ownerregister.html",{"message":"An error occured while trying to save!"})
+                return redirect("ownerslogin")
+            except:
+                try:
+                    User.objects.get(email=email).delete()
+                    return render(request,"ownerregister.html",{"message":"An error occured while trying to save!"})
+                except:
+                    return render(request,"ownerregister.html",{"message":"An error occured while trying to save1!"})
     return render(request,"ownerregister.html")
 def ownerslogin(request):
     return render(request,"ownerlogin.html")

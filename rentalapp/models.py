@@ -32,7 +32,7 @@ class Tenant(models.Model):
     tenant_id=models.IntegerField(unique=True)
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     def __str__(self):
-        return self.user
+        return self.name
 class Housetype(models.Model):
     SINGLE_ROOM = 'single_room'
     BEDSITTER = 'bedsitter'
