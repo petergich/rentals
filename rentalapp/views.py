@@ -58,7 +58,7 @@ def ownerslogin(request):
                 login(request, user)
                 return redirect('ownershome')  # Redirect to the home page after successful login
         else:
-            return render(request, "sellerlogin.html", {"message": "Invalid credentials"})
+            return render(request, "ownerlogin.html", {"message": "Invalid credentials"})
     return render(request,"ownerlogin.html")
 def tenantsregister(request):
     return render(request,"tenantregister.html")
@@ -68,7 +68,12 @@ def tenantshome(request):
     return HttpResponse("tenant home")
 @login_required(login_url="ownerslogin")
 def ownershome(request):
-    return render(request,"ownershome.html")
+    try:
+        owner=Owner.objects.get(user=request.user)
+        o_houses=owner_houses(owner)
+        return render(request, "ownershome.html",{"houses":o_houses,"owner":owner})
+    except:
+        return redirect("ownerslogin")
 @login_required(login_url="ownerslogin")
 def houses(request):
     return render(request,"houses.html")
@@ -78,12 +83,17 @@ def tenants(request):
     return render(request,"tenants.html")
 @login_required(login_url="ownerslogin")
 def rooms(request):
-    return render(request "rooms.html")
+    return render(request, "rooms.html")
 @login_required(login_url="ownerslogin")
 def ownersprofile(request):
     return render(request, "ownersprofile.html")
 def gallery(request):
     return (request,"gallery.html")
+def owner_houses(user):
+    if House.objects.filter(owner=user).exists():
+        return House.objects.filter(owner=user)
+    else:
+        return None
 def locations():
 
 

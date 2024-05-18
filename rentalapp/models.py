@@ -12,7 +12,8 @@ class Owner(models.Model):
         return self.name
 class House(models.Model):
     name=models.CharField(max_length=254)
-    cover_image = models.ImageField(upload_to='files/images/')
+    owner=models.ForeignKey(Owner,null=True,on_delete=models.SET_NULL)
+    cover_image = models.ImageField(upload_to="media/")
     county=models.CharField(max_length=50)
     subcounty=models.CharField(max_length=50)
     ward=models.CharField(max_length=50)
