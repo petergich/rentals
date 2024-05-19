@@ -3,10 +3,10 @@ from django.http import HttpResponse
 import csv
 from django.contrib.auth.models import User
 from .models import * 
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate,logout
 from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
-
+from django.http import JsonResponse
 
 
 def home(request):
@@ -73,10 +73,11 @@ def ownershome(request):
         o_houses=owner_houses(owner)
         return render(request, "ownershome.html",{"houses":o_houses,"owner":owner})
     except:
+        logout(request)
         return redirect("ownerslogin")
 @login_required(login_url="ownerslogin")
-def houses(request):
-    return render(request,"houses.html")
+def addhouses(request):
+    return render(request,"houses.html",{"locations":locations()})
 # Create your views here.
 @login_required(login_url="ownerslogin")
 def tenants(request):
@@ -94,6 +95,21 @@ def owner_houses(user):
         return House.objects.filter(owner=user)
     else:
         return None
+def subcounties(request):
+    county=request.GET.get("county")
+    if county:
+       subcounties_instances=subcountiesdata(county)
+       return JsonResponse({"data":subcounties_instances}) 
+    else:
+        return redirect("addhouses")
+def wards(request):
+    county=request.GET.get("county")
+    subcounty=request.GET.get("subcounty")
+    if subcounty and county:
+       wards_instances=wards_data(county,subcounty)
+       return JsonResponse({"wards":wards_instances})
+    else:
+        return redirect("addhouses")
 def locations():
 
 
@@ -129,7 +145,6 @@ def locations():
             val=val+1
             jump=jump+1
     # Print the resulting dictionary
-    print(county_dict)
     # Now you can access the data variable which contains the data from the CSV file
     # For example, to print the first 5 rows:
     locations=[]
@@ -158,3 +173,24 @@ def locations():
         locations.append({"county":county_dict[county],"subcounty":c_subcounties})   
         count=count+1
     return locations
+def subcountiesdata(county):
+    locations_data=locations()
+    for location in locations_data:
+        if location["county"]==county:
+            #print("found")
+            subcountieslist=[]
+            for sub_county in location["subcounty"]:
+                subcountieslist.append(sub_county["subcounty"])
+            print(subcountieslist)
+            return subcountieslist
+def wardsdata(county,subcounty):
+    locations_data=locations()
+    for location in locations_data:
+        if location["county"]==county:
+            #print("found")
+            wards_inst=[]
+            for sub_county in location["subcounty"]:
+                if sub_county["subcounty"]==subcounty:
+                    for ward in sub_county["wards"]:
+                        wards_inst.append(ward)
+                    return wards_inst

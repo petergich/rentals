@@ -22,48 +22,42 @@
       <div class="sidebar-menu">
         <ul>
           <li>
-            <a href="3"
+            <a href="{% url "ownershome"%}"
               ><span class="las la-igloo"></span><span>Dashboard</span></a
             >
           </li>
           <li>
-            <a href="#"
+            <a href="{% url "ownersprofile"%}"
               ><span class="las la-users"></span><span></span>Profile</a
             >
           </li>
           <li>
-            <a href="#"
+            <a href="{% url "tenants"%}"
               ><span class="las la-id-card"></span><span>Tenants</span></a
             >
           </li>
           <li>
-            <a href="#"
-              ><span class="las la-car"></span><span>rooms</span></a
+            <a href="{% url "rooms" %}"
+              ><span class="las la-car"></span><span>Rooms</span></a
             >
           </li>
           <li>
-            <a href="#"
+            <a href="{% url "addhouses"%}"
               ><span class="las la-receipt"></span
-              ><span>Houses</span></a
+              ><span>Add new Houses</span></a
             >
           </li>
           <li>
             <a href="#"
               ><span class="las la-clipboard-check"></span
-              ><span>Gallery</span></a>
+              ><span>Bulk SMS</span></a>
           </li>
-          <!--<li>
-            <a href="#"
-                ><span class="las la-gas-pump"></span
-                ><span>Fuels</span></a
-              >
-            </li>
           <li>
             <a href="#"
-                ><span class="las la-chart-line"></span
-                ><span>Tracking</span></a
-              >
-            </li>-->
+              ><span class="las la-clipboard-check"></span
+              ><span>Bulk Whatsapp</span></a>
+          </li>
+          
         </ul>
         <ul class="bottom-menu">
           <li>
@@ -90,94 +84,135 @@
         <img style="position:relative;max-height:2%"src="{% static "logo.jpg" %}">
       </header>
       <main>
-        <div class="cards">
-          <div class="card-single">
-            <div>
-              <span><a href="#">Tracking Reports</a></span>
+        <form action="{% url "addhouses" %}" method="POST" enctype="multipart/form-data">
+        <div class="container position-relative">
+          <div class="row">
+              <div class="col-md-6">
+                <div class="input-field">
+                  <label>HOUSE NAME</label><br>
+                  <input type="text" name="name" placeholder="Enter last the gouse name">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-field">
+                  <label>COVER IMAGE</label><br>
+                  <input type="file" name="coverimage" accept="image/*" placeholder="Enter last service distance">
+                </div>
+              </div>
+              <div class="input-field">
+                <label for="county">COUNTY</label><br>
+                <select id="county" name="county" required>
+                    <option value="" disabled selected>Select county</option>
+                    {% for location in locations %}
+                    <option value="{{location.county}}" >{{location.county}}</option>
+                    {% endfor %}
+                </select>
             </div>
-            <div>
-              <span class="las la-car-side"></span>
-            </div>
+            <div class="input-field">
+              <label for="subcounty">SUB-COUNTY</label><br>
+              <select id="subcounty" name="county" required>
+                  <option value="" disabled selected>Select sub-county</option>
+              </select>
           </div>
-          <div class="card-single">
-            <div>
-              <span><a href="#">Fueling Reports</a></span>
-            </div>
-            <div>
-              <span class="las la-gas-pump"></span>
-            </div>
-          </div>
-          <div class="card-single">
-            <div>
-              <span><a href="#">Journey Management Plan Reports</a></span>
-            </div>
-            <div>
-              <span class="las la-file"></span>
-            </div>
-          </div>
+          <div class="input-field">
+            <label for="ward">WARD</label><br>
+            <select id="ward" name="ward" required>
+                <option value="" disabled selected>Select ward</option>
+            </select>
         </div>
-        <br />
-            
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.1.2/dist/chart.umd.min.js"></script>
-        <script>
-          var ctx = document.getElementById('lineChart').getContext('2d');
-          var myChart = new Chart(ctx, {
-              type: 'line',
-              data: {
-                  labels: {{ labels|safe }},
-                  datasets: [{
-                      label: 'Overspeeding Incidents',
-                      data: {{ data|safe }},
-                      backgroundColor: [
-                          'rgba(85, 85, 85, 1)'
-                      ],
-                      borderColor: [
-                          'rgb(41, 155, 99)'
-                          
-                      ],
-                      borderWidth: 1
-                  }]
-              },
-              options: {
-                  responsive:true
-              }
-          });
-        </script>
-        <script>
-          var ctx = document.getElementById('doughnut').getContext('2d');
-          var myChart = new Chart(ctx, {
-              type: 'doughnut',
-              data: {
-                  labels: {{ lbls|safe}},
-                  datasets: [{
-                      label: 'Liters',
-                      data: {{ dt|safe }},
-                      backgroundColor: [
-                          'rgba(41, 155, 99, 1)',
-                          'rgba(54, 162, 235, 1)',
-                          'rgba(255, 206, 86, 1)',
-                          'rgba(120,46,139,1)'
-                          
-                      ],
-                      borderColor: [
-                          'rgba(41, 155, 99, 1)',
-                          'rgba(54, 162, 235, 1)',
-                          'rgba(255, 206, 86, 1)',
-                          'rgba(120,46,139,1)'
-                      ],
-                      borderWidth: 1
-                  }]
-              },
-              options: {
-                responsive: true
-              }
-          });
-        </script>
-        
+              <!-- Add more input fields as needed -->
+          </div>
+      </div>
+      
       </main>
       <footer style="bottom-margin:0;">
         <p style="text-align: center;">Copyright &#169; 2024 Lunertechs. All Rights Reserved.</p>
       </footer>
+      <script>
+        // Get references to the select elements
+        var countySelect = document.getElementById("county");
+        var subcountySelect = document.getElementById("subcounty");
+        var wardSelect=document.getElementById("ward")
+
+        // Add event listener for focus event on subcounty select element
+        subcountySelect.addEventListener('focus', function (event) {
+            // Check if a county is selected
+            if (!countySelect.value) {
+                // Show alert if no county is selected
+                alert("Please select a county first.");
+                // Prevent the dropdown from opening
+                event.preventDefault();
+                subcountySelect.blur();
+            }
+            else{
+              subcountySelect.value=""
+              while (subcountySelect.firstChild) {
+                subcountySelect.removeChild(subcountySelect.firstChild);
+            }
+              var county = countySelect.value;
+              fetch("{% url 'subcounties' %}?county=" + encodeURIComponent(county))
+                  .then(response => {
+                      if (!response.ok) {
+                          throw new Error('Network response was not ok');
+                      }
+                      return response.json(); // Parse JSON response
+                  })
+                  .then(data => {
+                      console.log('Data received:', data);
+                      // Process the parsed data as 
+                      data.data.forEach(subcounty => {
+                        const option = document.createElement('option');
+                        option.value = subcounty;
+                        option.textContent = subcounty;
+                        subcountySelect.appendChild(option);
+                    });
+                  })
+                  .catch(error => {
+                      console.error('There was a problem with your fetch operation:', error);
+                  });
+
+            }
+        });
+        wardSelect.addEventListener('focus', function (event) {
+          // Check if a county is selected
+          if (!countySelect.value || !wardSelect.value) {
+              // Show alert if no county is selected
+              alert("Please select a county and subcounty first.");
+              // Prevent the dropdown from opening
+              event.preventDefault();
+              subcountySelect.blur();
+          }
+          else{
+            wardSelect.value=""
+            while (wardSelect.firstChild) {
+              wardSelect.removeChild(wardSelect.firstChild);
+          }
+            var county = countySelect.value;
+            var subcounty= subcountySelect.value
+            fetch("{% url 'wards' %}?county=" + encodeURIComponent(county)+"&subcounty="county= + encodeURIComponent(subcounty))
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // Parse JSON response
+                })
+                .then(data => {
+                    console.log('Data received:', data);
+                    // Process the parsed data as 
+                    data.data.forEach(subcounty => {
+                      const option = document.createElement('option');
+                      option.value = subcounty;
+                      option.textContent = subcounty;
+                      subcountySelect.appendChild(option);
+                  });
+                })
+                .catch(error => {
+                    console.error('There was a problem with your fetch operation:', error);
+                });
+
+          }
+      });
+      </script>
       {% if messages %}
     <div class="messages">
       {% for message in messages %}

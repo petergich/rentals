@@ -9,9 +9,11 @@ urlpatterns = [
     path("ownershome",views.ownershome,name="ownershome"),
     path("tenantslogin", views.tenantslogin,name="tenantslogin"),
     path("tenantsregister",views.tenantsregister, name="tenanatsregister"),
-    path("houses",views.houses,name="houses"),
+    path("addhouses",views.addhouses,name="addhouses"),
     path("tenants",views.tenants,name="tenants"),
     path("rooms",views.rooms,name="rooms"),
     path("ownersprofile",views.ownersprofile,name="ownersprofile"),
     path("gallery",views.gallery,name="gallery"),
+    path("subcounties",views.subcounties,name="subcounties"),
+    path("wards",views.wards,name="wards")
 ]
