@@ -10,7 +10,7 @@ from django.http import JsonResponse
 
 
 def home(request):
-    return render(request,"landing.html")
+    return render(request,"index.html")
 def ownersregister(request):
     if request.method=="POST":
         username=request.POST.get("username")
