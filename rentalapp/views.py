@@ -106,7 +106,7 @@ def wards(request):
     county=request.GET.get("county")
     subcounty=request.GET.get("subcounty")
     if subcounty and county:
-       wards_instances=wards_data(county,subcounty)
+       wards_instances=wardsdata(county,subcounty)
        return JsonResponse({"wards":wards_instances})
     else:
         return redirect("addhouses")
