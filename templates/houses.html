@@ -120,6 +120,7 @@
       </header>
       <main>
         <form action="{% url 'addhouses' %}" method="POST" enctype="multipart/form-data">
+          
           <div class="container">
             <div class="card">
               <div class="col-md-6">
@@ -161,9 +162,19 @@
                   <input type="numbet" name="number" placeholder="Enter the number of houses">
                 </div>
               </div>
+              <div class="col-md-6">
+                <div class="input-field">
+                  <label>LOCATION</label><br>
+                  <div class="justify-between">
+                  <button class="btn btn-secondary">Use my current location</button>
+                  <button class="btn btn-success">Select location</button>
+                  </div>
+                </div>
+              </div>
               <!-- Add more input fields as needed -->
             </div>
           </div>
+    
         </form>
       </main>
       <footer style="bottom-margin:0;">
