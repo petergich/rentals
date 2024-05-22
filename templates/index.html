@@ -95,10 +95,11 @@
 
           <div class="col-lg-4 col-md-6">
             <div class="hotel" style="background: #101522;border-radius: 30px;">
-              <div class="hotel-img" style="border-radius: 30px;">
+              <div class="hotel-img" style="border-radius: 30px; position: relative;">
                 <img src="{% static "img/hotels/1.jpg" %}" alt="Hotel 1" class="img-fluid">
+                  <img src="{% static "img/speakers/1.jpg" %}" alt="Round Image" class="round-img">
               </div>
-              <h3><a href="#">Hotel 1</a></h3>
+              <h3><a href="#" style="color: wheat;">Hotel 1</a></h3>
               <div class="stars">
                 <i class="bi bi-star-fill"></i>
                 <i class="bi bi-star-fill"></i>
@@ -106,28 +107,29 @@
                 <i class="bi bi-star-fill"></i>
                 <i class="bi bi-star-fill"></i>
               </div>
-              <p>0.4 Mile from the Venue</p>
+              <p style="color: wheat;">0.4 Mile from the Venue</p>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6">
             <div class="hotel" style="background: #101522;border-radius: 30px;">
-              <div class="hotel-img" style="border-radius: 30px;">
-                <img src="{% static "img/hotels/2.jpg" %}" alt="Hotel 2" class="img-fluid">
+              <div class="hotel-img" style="border-radius: 30px; position: relative;">
+                <img src="{% static "img/hotels/2.jpg" %}" alt="Hotel 1" class="img-fluid">
+                  <img src="{% static "img/speakers/4.jpg" %}" alt="Round Image" class="round-img">
               </div>
-              <h3><a href="#">Hotel 2</a></h3>
+              <h3><a href="#" style="color: wheat;">Hotel 2</a></h3>
               <div class="stars">
                 <i class="bi bi-star-fill"></i>
                 <i class="bi bi-star-fill"></i>
                 <i class="bi bi-star-fill"></i>
                 <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill-half-full"></i>
+                <i class="bi bi-star-fill"></i>
               </div>
-              <p>0.5 Mile from the Venue</p>
+              <p style="color: wheat;">0.5 Mile from the Venue</p>
             </div>
           </div>
 
-          <div class="col-lg-4 col-md-6">
+          {% comment %} <div class="col-lg-4 col-md-6">
             <div class="hotel" style="background: #101522;border-radius: 30px;">
               <div class="hotel-img" style="border-radius: 30px;">
                 <img src="{% static "img/hotels/3.jpg" %}"  alt="Hotel 3" class="img-fluid">
@@ -141,6 +143,23 @@
               </div>
               <p>0.6 Mile from the Venue</p>
             </div>
+          </div> {% endcomment %}
+          <div class="col-lg-4 col-md-6">
+            <div class="hotel" style="background: #101522;border-radius: 30px;">
+              <div class="hotel-img" style="border-radius: 30px; position: relative;">
+                <img src="{% static "img/hotels/3.jpg" %}" alt="Hotel 1" class="img-fluid">
+                  <img src="{% static "img/speakers/3.jpg" %}" alt="Round Image" class="round-img">
+              </div>
+              <h3><a href="#" style="color: wheat;">Hotel 3</a></h3>
+              <div class="stars">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+              </div>
+              <p style="color: wheat;">0.6 Mile from the Venue</p>
+            </div>
           </div>
 
         </div>
@@ -153,21 +172,19 @@
 
       <div class="container" data-aos="fade-up">
         <div class="section-header">
-          <h2>Gallery</h2>
-          <p>Check our gallery from the recent events</p>
-        </div>
+          <h2>Locations</h2>
+          <p>Check where rentals are located and
+            find your dream home here within these higlight locations.
       </div>
 
       <div class="gallery-slider swiper">
         <div class="swiper-wrapper align-items-center">
-          <div class="swiper-slide"><a href="{% static "img/gallery/1.jpg" %}" class="gallery-lightbox"><img src="{% static "img/gallery/1.jpg" %}" class="img-fluid" alt=""></a></div>
-          <div class="swiper-slide"><a href="{% static "gallery/2.jpg" %}" class="gallery-lightbox"><img src="{% static "img/gallery/2.jpg" %}" class="img-fluid" alt=""></a></div>
-          <div class="swiper-slide"><a href="{% static "img/gallery/3.jpg" %}" class="gallery-lightbox"><img src="{% static "img/gallery/3.jpg"%}" class="img-fluid" alt=""></a></div>
-          <div class="swiper-slide"><a href="{% static "img/gallery/4.jpg" %}" class="gallery-lightbox"><img src="{% static "img/gallery/4.jpg" %}" class="img-fluid" alt=""></a></div>
-          <div class="swiper-slide"><a href="{% static "img/gallery/5.jpg" %}" class="gallery-lightbox"><img src="{% static "img/gallery/5.jpg" %}" class="img-fluid" alt=""></a></div>
-          <div class="swiper-slide"><a href="{% static "img/gallery/6.jpg" %}" class="gallery-lightbox"><img src="{% static "img/gallery/6.jpg" %}" class="img-fluid" alt=""></a></div>
-          <div class="swiper-slide"><a href="{% static "img/gallery/7.jpg" %}" class="gallery-lightbox"><img src="{% static "img/gallery/7.jpg" %}" class="img-fluid" alt=""></a></div>
-          <div class="swiper-slide"><a href="{% static "img/gallery/8.jpg" %}" class="gallery-lightbox"><img src="{% static "img/gallery/8.jpg" %}" class="img-fluid" alt=""></a></div>
+          <div class="swiper-slide"><a href="{% static "img/counties/mombasa.jpg" %}" class="gallery-lightbox"><img src="{% static "img/counties/mombasa.jpg" %}" class="img-fluid" alt=""></a></div>
+          <div class="swiper-slide"><a href="{% static "img/counties/mombasa.jpeg" %}" class="gallery-lightbox"><img src="{% static "img/counties/mombasa.jpeg" %}" class="img-fluid" alt=""></a></div>
+          <div class="swiper-slide"><a href="{% static "img/counties/karura.jpeg" %}" class="gallery-lightbox"><img src="{% static "img/counties/karura.jpeg"%}" class="img-fluid" alt=""></a></div>
+          <div class="swiper-slide"><a href="{% static "img/counties/nai0.jpeg" %}" class="gallery-lightbox"><img src="{% static "img/counties/nai0.jpeg" %}" class="img-fluid" alt=""></a></div>
+          <div class="swiper-slide"><a href="{% static "img/counties/nai1.jpeg" %}" class="gallery-lightbox"><img src="{% static "img/counties/nai1.jpeg" %}" class="img-fluid" alt=""></a></div>
+          <div class="swiper-slide"><a href="{% static "img/counties/nairobi.jpeg" %}" class="gallery-lightbox"><img src="{% static "img/counties/nairobi.jpeg" %}" class="img-fluid" alt=""></a></div>
         </div>
         <div class="swiper-pagination"></div>
       </div>
@@ -189,59 +206,32 @@
             <ul class="faq-list">
 
               <li>
-                <div data-bs-toggle="collapse" class="collapsed question" href="#faq1">Non consectetur a erat nam at lectus urna duis? <i class="bi bi-chevron-down icon-show"></i><i class="bi bi-chevron-up icon-close"></i></div>
+                <div data-bs-toggle="collapse" class="collapsed question" href="#faq1">Is this property available for the dates I need? <i class="bi bi-chevron-down icon-show"></i><i class="bi bi-chevron-up icon-close"></i></div>
                 <div id="faq1" class="collapse" data-bs-parent=".faq-list">
                   <p>
-                    Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non.
+                    Availability varies, please contact us directly for the most up-to-date information.
                   </p>
                 </div>
               </li>
 
               <li>
-                <div data-bs-toggle="collapse" href="#faq2" class="collapsed question">Feugiat scelerisque varius morbi enim nunc faucibus a pellentesque? <i class="bi bi-chevron-down icon-show"></i><i class="bi bi-chevron-up icon-close"></i></div>
+                <div data-bs-toggle="collapse" href="#faq2" class="collapsed question">Are short-term leases available?
+                  <i class="bi bi-chevron-down icon-show"></i><i class="bi bi-chevron-up icon-close"></i></div>
                 <div id="faq2" class="collapse" data-bs-parent=".faq-list">
                   <p>
-                    Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
+                    Short-term leases are available, please inquire for specific terms and pricing.
                   </p>
                 </div>
               </li>
 
               <li>
-                <div data-bs-toggle="collapse" href="#faq3" class="collapsed question">Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi? <i class="bi bi-chevron-down icon-show"></i><i class="bi bi-chevron-up icon-close"></i></div>
+                <div data-bs-toggle="collapse" href="#faq3" class="collapsed question">Are there any non-refundable fees or deposits? <i class="bi bi-chevron-down icon-show"></i><i class="bi bi-chevron-up icon-close"></i></div>
                 <div id="faq3" class="collapse" data-bs-parent=".faq-list">
                   <p>
-                    Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis
+                    Yes, there may be non-refundable fees such as a pet deposit or application fee.
                   </p>
                 </div>
               </li>
-
-              <li>
-                <div data-bs-toggle="collapse" href="#faq4" class="collapsed question">Ac odio tempor orci dapibus. Aliquam eleifend mi in nulla? <i class="bi bi-chevron-down icon-show"></i><i class="bi bi-chevron-up icon-close"></i></div>
-                <div id="faq4" class="collapse" data-bs-parent=".faq-list">
-                  <p>
-                    Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
-                  </p>
-                </div>
-              </li>
-
-              <li>
-                <div data-bs-toggle="collapse" href="#faq5" class="collapsed question">Tempus quam pellentesque nec nam aliquam sem et tortor consequat? <i class="bi bi-chevron-down icon-show"></i><i class="bi bi-chevron-up icon-close"></i></div>
-                <div id="faq5" class="collapse" data-bs-parent=".faq-list">
-                  <p>
-                    Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim suspendisse in est ante in. Nunc vel risus commodo viverra maecenas accumsan. Sit amet nisl suscipit adipiscing bibendum est. Purus gravida quis blandit turpis cursus in
-                  </p>
-                </div>
-              </li>
-
-              <li>
-                <div data-bs-toggle="collapse" href="#faq6" class="collapsed question">Tortor vitae purus faucibus ornare. Varius vel pharetra vel turpis nunc eget lorem dolor? <i class="bi bi-chevron-down icon-show"></i><i class="bi bi-chevron-up icon-close"></i></div>
-                <div id="faq6" class="collapse" data-bs-parent=".faq-list">
-                  <p>
-                    Laoreet sit amet cursus sit amet dictum sit amet justo. Mauris vitae ultricies leo integer malesuada nunc vel. Tincidunt eget nullam non nisi est sit amet. Turpis nunc eget lorem dolor sed. Ut venenatis tellus in metus vulputate eu scelerisque. Pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus. Nibh tellus molestie nunc non blandit massa enim nec.
-                  </p>
-                </div>
-              </li>
-
             </ul>
 
           </div>
@@ -256,7 +246,7 @@
       <div class="container" data-aos="zoom-in">
         <div class="section-header">
           <h2>Newsletter</h2>
-          <p>Rerum numquam illum recusandae quia mollitia consequatur.</p>
+          <p>Subscribe to our monthly Newsletter and get upto date trends</p>
         </div>
 
         <form method="POST" action="#">
@@ -278,8 +268,8 @@
       <div class="container" data-aos="fade-up">
 
         <div class="section-header">
-          <h2>Contact Us</h2>
-          <p>Nihil officia ut sint molestiae tenetur.</p>
+          <h2 style="color:wheat;">Contact Us</h2>
+          <p>Find us here</p>
         </div>
 
         <div class="row contact-info">
@@ -288,7 +278,7 @@
             <div class="contact-address">
               <i class="bi bi-geo-alt"></i>
               <h3>Address</h3>
-              <address>A108 Adam Street, NY 535022, USA</address>
+              <address>Nairobi, NBI 254, Kenya</address>
             </div>
           </div>
 
@@ -304,7 +294,7 @@
             <div class="contact-email">
               <i class="bi bi-envelope"></i>
               <h3>Email</h3>
-              <p><a href="mailto:info@example.com">info@example.com</a></p>
+              <p><a href="mailto:info@example.com">info@lunertechs.com</a></p>
             </div>
           </div>
 
@@ -348,7 +338,7 @@
 
           <div class="col-lg-3 col-md-6 footer-info">
             <img src="{% static "img/logo.png" %}" alt="TheEvenet">
-            <p>In alias aperiam. Placeat tempore facere. Officiis voluptate ipsam vel eveniet est dolor et totam porro. Perspiciatis ad omnis fugit molestiae recusandae possimus. Aut consectetur id quis. In inventore consequatur ad voluptate cupiditate debitis accusamus repellat cumque.</p>
+            <p>Discover your perfect retreat in this stunning rental property, situated in a serene neighborhood offering both comfort and convenience. Enjoy the beautiful outdoor space perfect for morning coffee or evening gatherings, along with additional amenities like high-speed Wi-Fi, in-unit laundry facilities, secure parking, and 24/7 customer support. Conveniently located close to local attractions.</p>
           </div>
 
           <div class="col-lg-3 col-md-6 footer-links">
@@ -376,11 +366,10 @@
           <div class="col-lg-3 col-md-6 footer-contact">
             <h4>Contact Us</h4>
             <p>
-              A108 Adam Street <br>
-              New York, NY 535022<br>
-              United States <br>
+              Nairobi, NBI 254<br>
+              Kenya <br>
               <strong>Phone:</strong> +1 5589 55488 55<br>
-              <strong>Email:</strong> info@example.com<br>
+              <strong>Email:</strong> info@lunertechs.com<br>
             </p>
 
             <div class="social-links">
@@ -399,7 +388,7 @@
 
     <div class="container">
       <div class="copyright">
-        &copy; Copyright <strong>TheEvent</strong>. All Rights Reserved
+        &copy; Copyright <strong>lunertechs</strong>. All Rights Reserved
       </div>
       <div class="credits">
         <!--
