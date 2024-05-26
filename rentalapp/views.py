@@ -77,6 +77,16 @@ def ownershome(request):
         return redirect("ownerslogin")
 @login_required(login_url="ownerslogin")
 def addhouses(request):
+    if request.method == "POST":
+        nam=request.POST.get("name")
+        img=request.POST.get("coverimage")
+        county=request.POST.get("county")
+        subcounty=request.POST.get("subcounty")
+        ward=request.POST.get("ward")
+        houses=request.POST.get("number")
+        loc=request.POST.get("location")
+        print("name:",nam,"\nImg:",img,"\ncounty:",county,"\nsubcounty:",subcounty,"\nward:",ward,"\nlocation:",loc)
+        return render(request,"houses.html",{"locations":locations()})
     return render(request,"houses.html",{"locations":locations()})
 # Create your views here.
 @login_required(login_url="ownerslogin")
