@@ -36,7 +36,6 @@ class Tenant(models.Model):
     def __str__(self):
         return self.name
 class Room(models.Model):
-    name=models.CharField(max_length=50)
     SINGLE_ROOM = 'single_room'
     BEDSITTER = 'bedsitter'
     ONE_BEDROOM = 'one_bedroom'

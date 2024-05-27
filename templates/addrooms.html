@@ -49,9 +49,10 @@
       
       .input-field {
         margin-bottom: 20px;
+        max-width:max-content;
       }
       
-      .input-field label {
+      .label {
         display: block;
        
         font-weight:bold;
@@ -74,10 +75,6 @@
     </style>
   </head>
   <body>
-    <form>
-      {% csrf_token %}
-      <!-- Other form fields and buttons -->
-  </form>
     <input type="checkbox" id="nav-toggle" />
     <div class="sidebar">
       <div class="sidebar-brand">
@@ -151,75 +148,39 @@
         </h2>
         <img style="position:relative;max-height:2%" src="{% static 'img/logo.png' %}">
       </header>
-      <main>
-        {% if houses %}
-        {% for house in houses %}
-        <div class="card m-1">
-          <div class="card-single" >
-            <div class="image-container">
-              <img class="h-image"src="{{ house.cover_image.url }}">
+      <main style="position:relative;top:10vh">
+        <div class="card p-4">
+            <div class="col-md-6">
+                <div class="input-field">
+                  <label>ROOM NAME/NUMBER</label><br>
+                  <input id="name"type="text" name="roomno" required placeholder="Enter the room number">
+                </div>
             </div>
-           
-            <div>
-              <a href="#"><h5 style="color: rgb(50, 100, 50);font-weight:bold;">{{house.name}}</h5></a>
-              <a href="#"><p>Vacant rooms</p></a>
-              <a href="#"><p>Available rooms</p></a>
-              <a href="#"><p>Tenants</p></a>
-              
-            </div>
+            <div class="col-md-6">
+                <label class="label"for="roomtype">ROOM TYPE</label><br>
+                <select id="roomtype" name="roomtype" required>
+                  <option value="single_room" selected>Single Room</option>
+                  <option value="bedsitter">Bedsitter</option>
+                  <option value="onedroom">One Bedroom</option>
+                  <option value="twobedroom">Two Bedroom</option>
+                  <option value="threebedroom">Three Bedrroom</option>
+                  <option value="fourbedroom">Four bedroom</option>
+                  <option value="fivebedroom">Five Bedroom</option>
+                  
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="label"for="rate">PAYMENT</label><br>
+                <select id="rate" name="rate" required>
+                  <option value="daily" >Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly" selected>Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </div>
+        </div>
             
-          </div>
-          <div class="m-1">
-            <button class="btn btn-success m-3">Edit  <i class="fas fa-pencil-alt"></i></button>
-            <button onclick="deleteModelInstance({{house.id}})"class="btn btn-danger m-3">Delete  <i class="fas fa-trash-alt"></i></button>
-            <button class="btn btn-primary m-3" onclick="addroom({{house.id}})">Add room<i class="fas fa-door-open"></i></button>
-            </div>
-        </div>
-        {% endfor %}
-        {% else %}
-        <div class="card m-1">
-          <div style="align-self:center" class="card-single column">
-           <div class="m-4 "><h2 style="color:red;">You have not added any houses yet</h2><br></div><br>
-           <a href="{% url "addhouses" %}"> <button class="btn btn-success" >Add here</button></div>
-          </div>
-        </div>
-        {% endif %}
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.1.2/dist/chart.umd.min.js"></script>
       
-       <script>
-        function addroom(houseid){
-          window.location.href="{% url "addrooms" %}?&houseid="+encodeURIComponent(houseid)
-        }
-          function deleteModelInstance(instanceId) {
-            // Fetch CSRF token
-            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        
-            // Send HTTP POST request to delete view
-            fetch(`/delete/${instanceId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken,
-                },
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert(data.message);  // Log success message
-                window.location.reload();
-                // Handle success (e.g., update UI)
-            })
-            .catch(error => {
-                console.error('There was a problem with your fetch operation:', error);
-                // Handle error
-            });
-        }
-        
-        </script>
         
       </main>
       <footer style="bottom-margin:0;">

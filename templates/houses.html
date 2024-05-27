@@ -78,7 +78,7 @@
     <div class="sidebar">
       <div class="sidebar-brand">
         <h2>
-          <img style="border-radius:10px" src="{% static 'logo.jpg' %}">
+          <img style="border-radius:10px" src="{% static 'img/logo.png' %}">
         </h2>
       </div>
       <div class="sidebar-menu">
@@ -145,9 +145,9 @@
           <span class="las la-user"></span>
           {{ request.user.username }}
         </h2>
-        <img style="position:relative;max-height:2%" src="{% static 'imags/icon.jpeg' %}">
+        <img style="position:relative;max-height:2%" src="{% static 'img/logo.png' %}">
       </header>
-      <main>
+      <main style="position:relative;top:10vh">
         <div class="card map-div hide" id="map"></div>
         <div class="close-div"></div>
         <div id="mapbutton" onclick="locatupdate()"class="button-div hide"><button class="button btn-success p-4">Ok</button></div>
@@ -155,7 +155,7 @@
         <form id="myForm"action="{% url 'addhouses' %}" method="POST" enctype="multipart/form-data">
           {% csrf_token %}
           
-          <div class="container">
+          <div class="">
             <div class="card d-flex">
               <div class="col-md-6">
                 <div class="input-field">

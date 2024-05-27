@@ -7,8 +7,10 @@ from django.contrib.auth import login, authenticate,logout
 from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-
-
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+import os
+message=""
 def home(request):
     return render(request,"index.html")
 def ownersregister(request):
@@ -69,9 +71,13 @@ def tenantshome(request):
 @login_required(login_url="ownerslogin")
 def ownershome(request):
     try:
+        
         owner=Owner.objects.get(user=request.user)
         o_houses=owner_houses(owner)
-        return render(request, "ownershome.html",{"houses":o_houses,"owner":owner})
+        if message!="":
+            alert=message
+            return render(request, "ownershome.html",{"houses":o_houses,"owner":owner,"message":alert})
+        return render(request, "ownershome.html",{"houses":o_houses,"owner":owner,})
     except:
         logout(request)
         return redirect("ownerslogin")
@@ -79,15 +85,40 @@ def ownershome(request):
 def addhouses(request):
     if request.method == "POST":
         nam=request.POST.get("name")
-        img=request.POST.get("coverimage")
+        img=request.FILES.get("coverimage")
         county=request.POST.get("county")
         subcounty=request.POST.get("subcounty")
         ward=request.POST.get("ward")
         houses=request.POST.get("number")
         loc=request.POST.get("location")
-        print("name:",nam,"\nImg:",img,"\ncounty:",county,"\nsubcounty:",subcounty,"\nward:",ward,"\nlocation:",loc)
+        latitude, longitude = map(float, loc.split(','))
+        if img:
+            fs = FileSystemStorage()
+            image_name = fs.save(img.name, img)
+            House.objects.create(
+                name=nam,
+                owner=Owner.objects.get(user=User.objects.get(username=request.user.username)),
+                cover_image=image_name,
+                county=county,
+                subcounty=subcounty,
+                ward=ward,
+                latitude=latitude,
+                longitude=longitude,
+                no_houses=houses,
+                  # Save the file path
+                  # Save the image path
+            )
+            message="Successfully added"
+            return redirect("ownershome")
         return render(request,"houses.html",{"locations":locations()})
     return render(request,"houses.html",{"locations":locations()})
+@login_required(login_url="ownerslogin")
+def addrooms(request):
+    house_id=request.GET.get("houseid")
+    if house_id:
+        return render(request,"addrooms.html")
+    else:
+        return redirect("ownershome")
 # Create your views here.
 @login_required(login_url="ownerslogin")
 def tenants(request):
@@ -124,8 +155,7 @@ def locations():
 
 
     # Define the path to your CSV file
-    csv_file_path = "C:/Users/CCAdmin/projects/rentals/rentalapp/files/locations.csv"
-
+    csv_file_path = os.path.join(settings.BASE_DIR, 'rentalapp', 'files', 'locations.csv')
     # Create an empty list to store the data
     data = []
 
@@ -141,7 +171,7 @@ def locations():
     # Initialize an empty dictionary
     val=1
     county_dict={}
-    county_data="C:/Users/CCAdmin/projects/rentals/rentalapp/files/county_data.csv"
+    county_data=os.path.join(settings.BASE_DIR, 'rentalapp', 'files', 'county_data.csv')
     with open(county_data, newline='') as csvfile:
         # Create a CSV reader object
         county_dat= csv.reader(csvfile)
@@ -204,3 +234,10 @@ def wardsdata(county,subcounty):
                     for ward in sub_county["wards"]:
                         wards_inst.append(ward)
                     return wards_inst
+def deletehouse(request,instance_id):
+    house=House.objects.get(id=instance_id)
+    try:
+        house.delete()
+        return JsonResponse({"message":"Deleted succesfully"})
+    except:
+        return JsonResponse({"message":"Unable to delete, Please contact support"})

@@ -15,5 +15,7 @@ urlpatterns = [
     path("ownersprofile",views.ownersprofile,name="ownersprofile"),
     path("gallery",views.gallery,name="gallery"),
     path("subcounties",views.subcounties,name="subcounties"),
-    path("wards",views.wards,name="wards")
+    path("wards",views.wards,name="wards"),
+    path('delete/<int:instance_id>/', views.deletehouse, name='delete_model_instance'),
+    path("addrooms",views.addrooms,name="addrooms"), 
 ]
