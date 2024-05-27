@@ -12,7 +12,9 @@ from django.conf import settings
 import os
 message=""
 def home(request):
-    return render(request,"index.html")
+    houses = House.objects.all()
+    return render(request, "index.html", {"houses": houses})
+
 def ownersregister(request):
     if request.method=="POST":
         username=request.POST.get("username")
@@ -171,6 +173,7 @@ def locations():
     # Initialize an empty dictionary
     val=1
     county_dict={}
+    county_data=os.path.join(settings.BASE_DIR, 'rentalapp', 'files', 'county_data.csv')
     county_data=os.path.join(settings.BASE_DIR, 'rentalapp', 'files', 'county_data.csv')
     with open(county_data, newline='') as csvfile:
         # Create a CSV reader object
