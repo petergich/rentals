@@ -92,14 +92,14 @@
         </div>
 
         <div class="row" data-aos="fade-up" data-aos-delay="100">
-
+          {% for house in houses %}
           <div class="col-lg-4 col-md-6">
-            <div class="hotel" style="background: #101522;border-radius: 30px;">
+            <div class="hotel" style="background: #101522; border-radius: 30px;">
               <div class="hotel-img" style="border-radius: 30px; position: relative;">
-                <img src="{% static "img/hotels/1.jpg" %}" alt="Hotel 1" class="img-fluid">
-                  <img src="{% static "img/speakers/1.jpg" %}" alt="Round Image" class="round-img">
+                <img src="{{ house.cover_image.url }}" alt="{{ house.name }}" class="img-fluid">
+                <img src="{{ house.owner.profile_pic.url }}" alt="Round Image" class="round-img">
               </div>
-              <h3><a href="#" style="color: wheat;">Hotel 1</a></h3>
+              <h3><a href="#" style="color: wheat;">{{ house.name }}</a></h3>
               <div class="stars">
                 <i class="bi bi-star-fill"></i>
                 <i class="bi bi-star-fill"></i>
@@ -107,60 +107,11 @@
                 <i class="bi bi-star-fill"></i>
                 <i class="bi bi-star-fill"></i>
               </div>
-              <p style="color: wheat;">0.4 Mile from the Venue</p>
+              <p style="color: wheat;">{{ house.subcounty }}</p>
             </div>
           </div>
-
-          <div class="col-lg-4 col-md-6">
-            <div class="hotel" style="background: #101522;border-radius: 30px;">
-              <div class="hotel-img" style="border-radius: 30px; position: relative;">
-                <img src="{% static "img/hotels/2.jpg" %}" alt="Hotel 1" class="img-fluid">
-                  <img src="{% static "img/speakers/4.jpg" %}" alt="Round Image" class="round-img">
-              </div>
-              <h3><a href="#" style="color: wheat;">Hotel 2</a></h3>
-              <div class="stars">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-              </div>
-              <p style="color: wheat;">0.5 Mile from the Venue</p>
-            </div>
-          </div>
-
-          {% comment %} <div class="col-lg-4 col-md-6">
-            <div class="hotel" style="background: #101522;border-radius: 30px;">
-              <div class="hotel-img" style="border-radius: 30px;">
-                <img src="{% static "img/hotels/3.jpg" %}"  alt="Hotel 3" class="img-fluid">
-              </div>
-              <h3><a href="#">Hotel 3</a></h3>
-              <div class="stars">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-              </div>
-              <p>0.6 Mile from the Venue</p>
-            </div>
-          </div> {% endcomment %}
-          <div class="col-lg-4 col-md-6">
-            <div class="hotel" style="background: #101522;border-radius: 30px;">
-              <div class="hotel-img" style="border-radius: 30px; position: relative;">
-                <img src="{% static "img/hotels/3.jpg" %}" alt="Hotel 1" class="img-fluid">
-                  <img src="{% static "img/speakers/3.jpg" %}" alt="Round Image" class="round-img">
-              </div>
-              <h3><a href="#" style="color: wheat;">Hotel 3</a></h3>
-              <div class="stars">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-              </div>
-              <p style="color: wheat;">0.6 Mile from the Venue</p>
-            </div>
-          </div>
+        {% endfor %}
+        
 
         </div>
       </div>

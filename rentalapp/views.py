@@ -7,10 +7,14 @@ from django.contrib.auth import login, authenticate,logout
 from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.conf import settings
+import os
 
 
 def home(request):
-    return render(request,"index.html")
+    houses = House.objects.all()
+    return render(request, "index.html", {"houses": houses})
+
 def ownersregister(request):
     if request.method=="POST":
         username=request.POST.get("username")
@@ -124,7 +128,7 @@ def locations():
 
 
     # Define the path to your CSV file
-    csv_file_path = "C:/Users/CCAdmin/projects/rentals/rentalapp/files/locations.csv"
+    csv_file_path = os.path.join(settings.BASE_DIR, 'rentalapp', 'files', 'locations.csv')
 
     # Create an empty list to store the data
     data = []
@@ -141,7 +145,7 @@ def locations():
     # Initialize an empty dictionary
     val=1
     county_dict={}
-    county_data="C:/Users/CCAdmin/projects/rentals/rentalapp/files/county_data.csv"
+    county_data=os.path.join(settings.BASE_DIR, 'rentalapp', 'files', 'county_data.csv')
     with open(county_data, newline='') as csvfile:
         # Create a CSV reader object
         county_dat= csv.reader(csvfile)
