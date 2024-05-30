@@ -60,7 +60,7 @@
       }
       
       .input-field input, .input-field select {
-        width: 100%;
+        max-width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -149,14 +149,16 @@
         <img style="position:relative;max-height:2%" src="{% static 'img/logo.png' %}">
       </header>
       <main style="position:relative;top:10vh">
+        <form action="{% url 'addrooms' %}?houseid={{ house }}" method="POST">
+          {% csrf_token %}
         <div class="card p-4">
             <div class="col-md-6">
                 <div class="input-field">
-                  <label>ROOM NAME/NUMBER</label><br>
-                  <input id="name"type="text" name="roomno" required placeholder="Enter the room number">
+                  <label class="label">ROOM NAME/NUMBER</label><br>
+                  <input id="name"type="text" name="roomno" required placeholder="Enter the room number/name">
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 input-field">
                 <label class="label"for="roomtype">ROOM TYPE</label><br>
                 <select id="roomtype" name="roomtype" required>
                   <option value="single_room" selected>Single Room</option>
@@ -169,8 +171,8 @@
                   
                 </select>
               </div>
-              <div class="col-md-6">
-                <label class="label"for="rate">PAYMENT</label><br>
+              <div class="col-md-6 input-field">
+                <label class="label"for="rate">PAYMENT PERIOD</label><br>
                 <select id="rate" name="rate" required>
                   <option value="daily" >Daily</option>
                   <option value="weekly">Weekly</option>
@@ -178,10 +180,25 @@
                   <option value="yearly">Yearly</option>
                 </select>
               </div>
+              <div class="col-md-6 input-field">
+                <label class="label"for="floor">SELECT THE FLOOR </label><br>
+                <select id="floor" name="floor" required>
+                  {% for floor in floors %}
+                  <option value="{{ floor }}" >{{floor}} floor</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <div class="input-field">
+                  <label class="label">PRICE</label><br>
+                  <input id="price"type="number" name="price" required placeholder="Enter the room price">
+                </div>
+            </div>
+            <button class="btn btn-success">Save</button>
         </div>
             
       
-        
+      </form>
       </main>
       <footer style="bottom-margin:0;">
         <p style="text-align: center;">Copyright &#169; 2024 Lunertechs. All Rights Reserved.</p>

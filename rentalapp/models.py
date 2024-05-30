@@ -21,6 +21,7 @@ class House(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     no_houses = models.IntegerField(default=0)
+    no_floors=models.IntegerField(default=1)
 
     def __str__(self):
         return self.name
@@ -49,7 +50,6 @@ class Room(models.Model):
     THREE_BEDROOM = 'three_bedroom'
     FOUR_BEDROOM = 'four_bedroom'
     FIVE_BEDROOM = 'five_bedroom'
-
     TYPE_CHOICES = [
         (SINGLE_ROOM, 'Single Room'),
         (BEDSITTER, 'Bedsitter'),
@@ -60,7 +60,7 @@ class Room(models.Model):
         (FIVE_BEDROOM, 'Five Bedroom'),
     ]
     house = models.ForeignKey(House, on_delete=models.CASCADE)
-    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    htype = models.CharField(max_length=20, choices=TYPE_CHOICES)
     house_number = models.CharField(max_length=50)
     DAILY = "daily"
     WEEKLY = "weekly"
@@ -72,11 +72,13 @@ class Room(models.Model):
         (MONTHLY, "Monthly"),
         (YEARLY, "Yearly"),
     ]
+    tenant = models.ForeignKey(Tenant, on_delete=models.SET_NULL, null=True, default=None)
     rate = models.CharField(max_length=50, choices=RATE_CHOICES)
     price = models.IntegerField(default=0)
+    floor=models.CharField(max_length=50,default="ground")
 
     def __str__(self):
-        return f"{self.house.name} {self.type}"
+        return self.house_number
 
 class Tenancy(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)

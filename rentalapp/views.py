@@ -85,49 +85,95 @@ def ownershome(request):
         return redirect("ownerslogin")
 @login_required(login_url="ownerslogin")
 def addhouses(request):
-    if request.method == "POST":
-        nam=request.POST.get("name")
-        img=request.FILES.get("coverimage")
-        county=request.POST.get("county")
-        subcounty=request.POST.get("subcounty")
-        ward=request.POST.get("ward")
-        houses=request.POST.get("number")
-        loc=request.POST.get("location")
-        latitude, longitude = map(float, loc.split(','))
-        if img:
-            fs = FileSystemStorage()
-            image_name = fs.save(img.name, img)
-            House.objects.create(
-                name=nam,
-                owner=Owner.objects.get(user=User.objects.get(username=request.user.username)),
-                cover_image=image_name,
-                county=county,
-                subcounty=subcounty,
-                ward=ward,
-                latitude=latitude,
-                longitude=longitude,
-                no_houses=houses,
-                  # Save the file path
-                  # Save the image path
-            )
-            message="Successfully added"
-            return redirect("ownershome")
+    try:
+        owner=Owner.objects.get(user=request.user)
+        o_houses=owner_houses(owner)
+        if request.method == "POST":
+            nam=request.POST.get("name")
+            img=request.FILES.get("coverimage")
+            county=request.POST.get("county")
+            subcounty=request.POST.get("subcounty")
+            ward=request.POST.get("ward")
+            houses=request.POST.get("number")
+            loc=request.POST.get("location")
+            floor=request.POST.get("floors")
+            latitude, longitude = map(float, loc.split(','))
+            if img:
+                fs = FileSystemStorage()
+                image_name = fs.save(img.name, img)
+                House.objects.create(
+                    name=nam,
+                    owner=Owner.objects.get(user=User.objects.get(username=request.user.username)),
+                    cover_image=image_name,
+                    county=county,
+                    subcounty=subcounty,
+                    no_floors=floor,
+                    ward=ward,
+                    latitude=latitude,
+                    longitude=longitude,
+                    no_houses=houses,
+                    # Save the file path
+                    # Save the image path
+                )
+                message="Successfully added"
+                return redirect("ownershome")
+            return render(request,"houses.html",{"locations":locations()})
         return render(request,"houses.html",{"locations":locations()})
-    return render(request,"houses.html",{"locations":locations()})
+    except:
+         logout(request)
+         return redirect("ownerslogin")
 @login_required(login_url="ownerslogin")
 def addrooms(request):
-    house_id=request.GET.get("houseid")
-    if house_id:
-        return render(request,"addrooms.html")
-    else:
-        return redirect("ownershome")
+    try:
+        owner=Owner.objects.get(user=request.user)
+        o_houses=owner_houses(owner)
+        house_id=request.GET.get("houseid")
+        if house_id:
+            if request.method=="POST":
+                nam=request.POST.get("roomno")
+                r_type=request.POST.get("roomtype")
+                rate=request.POST.get("rate")
+                floor=request.POST.get("floor")
+                price=request.POST.get("price")
+                print("name",nam,"\ntype:",r_type,"\nrate:",rate,"\nfloor:",floor,"\nprice:",price)
+                Room.objects.create(
+                 house=House.objects.get(id=house_id),
+                 htype=r_type,
+                 house_number=nam,
+                 rate=rate,
+                 price=price,
+                 floor=floor,
+                )
+                
+            return render(request,"addrooms.html",{"house":house_id,"floors":get_floor_names(House.objects.get(id=house_id).no_floors)})
+        else:
+            return redirect("ownershome")
+    except:
+        logout(request)
+        return redirect("ownerslogin")
 # Create your views here.
 @login_required(login_url="ownerslogin")
 def tenants(request):
     return render(request,"tenants.html")
 @login_required(login_url="ownerslogin")
 def rooms(request):
-    return render(request, "rooms.html")
+    try:
+        owner=Owner.objects.get(user=request.user)
+        o_houses=owner_houses(owner)
+        house_id=request.GET.get("houseid")
+        instances_rooms=Room.objects.filter(house__owner=owner)
+        objects=[]
+        for house in o_houses:
+            i_rooms=[]
+            for instance in instances_rooms:
+                if instance.house==house:
+                    i_rooms.append(instance)
+            if i_rooms!=[]:
+                objects.append({"house":house,"rooms":i_rooms})
+        return render(request, "rooms.html",{"objects":objects})
+    except:
+         logout(request)
+         return redirect("ownerslogin")
 @login_required(login_url="ownerslogin")
 def ownersprofile(request):
     return render(request, "ownersprofile.html")
@@ -244,3 +290,26 @@ def deletehouse(request,instance_id):
         return JsonResponse({"message":"Deleted succesfully"})
     except:
         return JsonResponse({"message":"Unable to delete, Please contact support"})
+def get_floor_names(up_to_floor):
+    print("floor",up_to_floor)
+    # Initialize an empty list to hold the floor names
+    floor_names = []
+    
+    # Iterate through the range from 1 to up_to_floor + 1 (inclusive)
+    for floor in range(1, up_to_floor+1):
+        if floor == 1:
+            floor_names.append("ground")
+        else:
+            floor_names.append(f"{floor-1}{get_ordinal_suffix(floor-1)}")
+    
+    return floor_names
+
+def get_ordinal_suffix(n):
+    # Special cases for 11th, 12th, and 13th
+    if 10 <= n % 100 <= 20:
+        suffix = "th"
+    else:
+        # General cases
+        suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return suffix
+
