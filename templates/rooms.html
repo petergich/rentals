@@ -20,7 +20,14 @@
     />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link href="{% static 'styles.css' %}" rel="stylesheet" />
+    <link href="{% static 'core.css' %}" rel="stylesheet" />
     <style>
+      .rooms-row{
+
+      }
+      .rooms-row:hover{
+        background-color:rgba(200,200,200,0.9)
+      }
       .button-div{
         position: absolute;
         position: fixed;
@@ -160,12 +167,15 @@
         <img style="position:relative;max-height:2%" src="{% static 'img/logo.png' %}">
       </header>
       <main style="margin-top:15vh">
+       
         <div class="scrollable-table">
           {% for house in objects%}
+          <hr>
+          <div style="min-width:max-content;"class="card p-3 ">
           <h2>{{house.house.name}}
           <table class="table">
             <thead>
-              <tr>
+              <tr class="bg-info">
                 <th>ROOM NAME/NUMBER</th>
                 <th>TYPE</th>
                 <th>PAYMENT RATE</th>
@@ -176,28 +186,39 @@
             </thead>
             <tbody>
               {% for room in house.rooms %}
-               <tr>
-                <td>{{room.house_number}}</td>
-                <td>{{room.htype}}</td>
-                <td>{{room.rate}}</td>
-                <td>STATUS</td>
-                <td>{{room.price}}</td>
-                <td>{{room.price}}</td>
+               <tr class="table rooms-row" onclick="popup()">
+                <td style="font-size:14px">{{room.house_number}}</td>
+                <td style="font-size:14px">{{room.htype}}</td>
+                <td style="font-size:14px">{{room.rate}}</td>
+                {% if room.tenant%}
+                <td class="m-2"style="color:white;font-size:14px;background-color:rgba(100,0,0,0.1);border-radius:10px;">Occupied</td>
+                {% else%}
+                <td class="m-2"style="color:white;font-size:14px;background-color:rgba(0,100,0.1);border-radius:10px;">Vacant</td>
+                {% endif %}
+                <td style="font-size:14px">{{room.price}} KSH</td>
+                <td style="font-size:14px">{{room.floor}}</td>
               </tr>
               {% endfor %}
             </tbody>
           </table>
+        </div>
           {% endfor %}
         </div>
       </main>
       <footer style="bottom-margin:0;">
         <p style="text-align: center;">Copyright &#169; 2024 Lunertechs. All Rights Reserved.</p>
       </footer>
+      <script>
+        function popup(){
+          alert("called")
+        }
+      </script>
       {% if messages %}
       <div class="messages">
         {% for message in messages %}
         <script>
           alert("{{ message }}");
+          
         </script>
         {% endfor %}
       </div>
