@@ -135,7 +135,6 @@ def addrooms(request):
                 rate=request.POST.get("rate")
                 floor=request.POST.get("floor")
                 price=request.POST.get("price")
-                print("name",nam,"\ntype:",r_type,"\nrate:",rate,"\nfloor:",floor,"\nprice:",price)
                 Room.objects.create(
                  house=House.objects.get(id=house_id),
                  htype=r_type,
@@ -174,6 +173,20 @@ def rooms(request):
     except:
          logout(request)
          return redirect("ownerslogin")
+@login_required(login_url="ownerslogin")
+def addtenant(request):
+    return render(request,"addtenant.html")
+@login_required(login_url="ownerslogin")
+def room(request):
+    # try:
+        owner=Owner.objects.get(user=request.user)
+        roomid=request.GET.get("roomid")
+        room=Room.objects.get(id=roomid)
+        
+        return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors)})
+    # except:
+    #      logout(request)
+    #      return redirect("ownerslogin")
 @login_required(login_url="ownerslogin")
 def ownersprofile(request):
     return render(request, "ownersprofile.html")

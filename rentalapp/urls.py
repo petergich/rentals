@@ -18,4 +18,6 @@ urlpatterns = [
     path("wards",views.wards,name="wards"),
     path('delete/<int:instance_id>/', views.deletehouse, name='delete_model_instance'),
     path("addrooms",views.addrooms,name="addrooms"), 
+    path("room",views.room,name="room"),
+    path("addtenant",views.addtenant,name="addtenant"),
 ]

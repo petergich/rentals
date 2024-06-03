@@ -49,10 +49,9 @@
       
       .input-field {
         margin-bottom: 20px;
-        max-width:max-content;
       }
       
-      .label {
+      .input-field label {
         display: block;
        
         font-weight:bold;
@@ -60,7 +59,7 @@
       }
       
       .input-field input, .input-field select {
-        max-width: 100%;
+        width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -114,7 +113,7 @@
               <span>Add new Houses</span>
             </a>
           </li>
-          
+         
           <li>
             <a href="#">
               <span class="las la-clipboard-check"></span>
@@ -153,49 +152,100 @@
         <form action="{% url 'addrooms' %}?houseid={{ house }}" method="POST">
           {% csrf_token %}
         <div class="card p-4">
+            <div class="align-items-right">
+            <a href="{% url "addtenant" %}?room={{ room.id }}"><button style="margin-left:0"class="btn btn-primary">Add Tenant</button><a>
+            </div>
             <div class="col-md-6">
                 <div class="input-field">
                   <label class="label">ROOM NAME/NUMBER</label><br>
-                  <input id="name"type="text" name="roomno" required placeholder="Enter the room number/name">
+                  <input id="name"type="text" name="roomno" placeholder="{{room.house_number}}">
                 </div>
             </div>
             <div class="col-md-6 input-field">
                 <label class="label"for="roomtype">ROOM TYPE</label><br>
-                <select id="roomtype" name="roomtype" required>
-                  <option value="single_room" selected>Single Room</option>
-                  <option value="bedsitter">Bedsitter</option>
-                  <option value="onedroom">One Bedroom</option>
-                  <option value="twobedroom">Two Bedroom</option>
-                  <option value="threebedroom">Three Bedrroom</option>
-                  <option value="fourbedroom">Four bedroom</option>
-                  <option value="fivebedroom">Five Bedroom</option>
+                <select id="roomtype" name="roomtype">
+                    {% if room.htype == single_room %}
+                    <option selected value="single_room">Single Room</option>
+                    {% else%}
+                    <option value="single_room">Single Room</option>
+                    {% endif %}
+                    {% if room.htype == bedsitter %}
+                    <option selected value="bedsitter">Bedsitter</option>
+                    {% else%}
+                    <option value="bedsitter">Bedsitter</option>
+                    {% endif %}
+                    {% if room.htype == "onedroom" %}
+                    <option selected value="onedroom">One Bedroom</option>
+                    {% else%}
+                    <option value="onedroom">One Bedroom</option>
+                    {% endif %}
+                    {% if room.htype == "twobedroom" %}
+                    <option selected value="twobedroom">Two Bedroom</option>
+                    {% else%}
+                    <option value="twobedroom">Two Bedroom</option>
+                    {% endif %}
+                    {% if room.htype == "threebedroom" %}
+                    <option selected value="threebedroom">Three Bedrroom</option>
+                    {% else%}
+                    <option value="threebedroom">Three Bedrroom</option>
+                    {% endif %}
+                    {% if room.htype == "fourbedroom" %}
+                    <option selected value="fourbedroom">Four bedroom</option>
+                    {% else%}
+                    <option selected value="fourbedroom">Four bedroom</option>
+                    {% endif %}
+                    {% if room.htype == "fivebedroom" %}
+                    <option selected value="fivebedroom">Five Bedroom</option>
+                    {% else%}
+                    <option value="fivebedroom">Five Bedroom</option>
+                    {% endif %}
                   
                 </select>
               </div>
               <div class="col-md-6 input-field">
                 <label class="label"for="rate">PAYMENT PERIOD</label><br>
-                <select id="rate" name="rate" required>
+                <select id="rate" name="rate" >
+                    {% if room.rate == "daily"%}
+                  <option selected value="daily" >Daily</option>
+                  {% else %}
                   <option value="daily" >Daily</option>
+                  {% endif %}
+                  {% if room.rate == "weekly"%}
+                  <option selected value="weekly">Weekly</option>
+                  {% else %}
                   <option value="weekly">Weekly</option>
+                  {% endif %}
+                  {% if room.rate == "monthly"%}
                   <option value="monthly" selected>Monthly</option>
+                  {% else %}
+                  <option value="monthly" >Monthly</option>
+                  {% endif %}
+                  {% if room.rate == "yearly"%}
+                  <option selected value="yearly">Yearly</option>
+                  {% else %}
                   <option value="yearly">Yearly</option>
+                  {% endif %}
                 </select>
               </div>
               <div class="col-md-6 input-field">
                 <label class="label"for="floor">SELECT THE FLOOR </label><br>
-                <select id="floor" name="floor" required>
+                <select id="floor" name="floor">
                   {% for floor in floors %}
+                  {% if floor == room.floor %}
+                  <option selected value="{{ floor }}" >{{floor}} floor</option>
+                  {% else%}
                   <option value="{{ floor }}" >{{floor}} floor</option>
+                  {% endif %}
                   {% endfor %}
                 </select>
               </div>
               <div class="col-md-6">
                 <div class="input-field">
                   <label class="label">PRICE</label><br>
-                  <input id="price"type="number" name="price" required placeholder="Enter the room price">
+                  <input id="price"type="number" name="price"placeholder="{{room.price}}KSH">
                 </div>
             </div>
-            <button class="btn btn-success">Save</button>
+            <button class="btn btn-primary">Update</button>
         </div>
             
       
