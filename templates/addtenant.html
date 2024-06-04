@@ -52,7 +52,7 @@
       }
       
       .input-field label {
-        display: block;
+        align-self-center;
        
         font-weight:bold;
         font-size:30px;
@@ -147,91 +147,30 @@
         </h2>
         <img style="position:relative;max-height:2%" src="{% static 'img/logo.png' %}">
       </header>
-      <main>
-        <div class="cards">
-          <div class="card-single">
-            <div>
-              <span><a href="#">Tracking Reports</a></span>
+      <main style="position:relative;top:10vh">
+        <div class="card ">
+            <div class="col-md-6">
+                <div class="input-field">
+                  <label class="label">NAME</label><br>
+                  <input id="name"type="text" name="name" placeholder="Enter your name">
+                  <!--<small id="error" class="form-text text-danger error">Please enter a valid number.</small>-->   
+                </div>
             </div>
-            <div>
-              <span class="las la-car-side"></span>
+            <div class="col-md-6">
+                <div class="input-field">
+                  <label class="label">ID NUMBER</label><br>
+                  <input id="name"type="text" name="name" placeholder="Enter your name">
+                </div>
             </div>
+            <div class="col-md-6">
+              <div class="input-field">
+                <label class="label">ID NUMBER</label><br>
+                <input id="name"type="text" name="name" placeholder="Enter your name">
+              </div>
           </div>
-          <div class="card-single">
-            <div>
-              <span><a href="#">Fueling Reports</a></span>
-            </div>
-            <div>
-              <span class="las la-gas-pump"></span>
-            </div>
-          </div>
-          <div class="card-single">
-            <div>
-              <span><a href="#">Journey Management Plan Reports</a></span>
-            </div>
-            <div>
-              <span class="las la-file"></span>
-            </div>
-          </div>
+          
+
         </div>
-        <br />
-            
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.1.2/dist/chart.umd.min.js"></script>
-        <script>
-          var ctx = document.getElementById('lineChart').getContext('2d');
-          var myChart = new Chart(ctx, {
-              type: 'line',
-              data: {
-                  labels: {{ labels|safe }},
-                  datasets: [{
-                      label: 'Overspeeding Incidents',
-                      data: {{ data|safe }},
-                      backgroundColor: [
-                          'rgba(85, 85, 85, 1)'
-                      ],
-                      borderColor: [
-                          'rgb(41, 155, 99)'
-                          
-                      ],
-                      borderWidth: 1
-                  }]
-              },
-              options: {
-                  responsive:true
-              }
-          });
-        </script>
-        <script>
-          var ctx = document.getElementById('doughnut').getContext('2d');
-          var myChart = new Chart(ctx, {
-              type: 'doughnut',
-              data: {
-                  labels: {{ lbls|safe}},
-                  datasets: [{
-                      label: 'Liters',
-                      data: {{ dt|safe }},
-                      backgroundColor: [
-                          'rgba(41, 155, 99, 1)',
-                          'rgba(54, 162, 235, 1)',
-                          'rgba(255, 206, 86, 1)',
-                          'rgba(120,46,139,1)'
-                          
-                      ],
-                      borderColor: [
-                          'rgba(41, 155, 99, 1)',
-                          'rgba(54, 162, 235, 1)',
-                          'rgba(255, 206, 86, 1)',
-                          'rgba(120,46,139,1)'
-                      ],
-                      borderWidth: 1
-                  }]
-              },
-              options: {
-                responsive: true
-              }
-          });
-        </script>
-        
       </main>
       <footer style="bottom-margin:0;">
         <p style="text-align: center;">Copyright &#169; 2024 Lunertechs. All Rights Reserved.</p>
