@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import csv
 from django.contrib.auth.models import User
 from .models import * 
-from django.contrib.auth import login, authenticate,logout
+from django.contrib.auth import login, authenticate,logout as auth_logout
 from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -14,6 +14,10 @@ message=""
 def home(request):
     houses = House.objects.all()
     return render(request, "index.html", {"houses": houses})
+
+def user_logout(request):
+    auth_logout(request)
+    return redirect("login")
 
 def ownersregister(request):
     if request.method=="POST":
@@ -43,6 +47,9 @@ def ownersregister(request):
                     return render(request,"ownerregister.html",{"message":"An error occured while trying to save1!"})
     return render(request,"ownerregister.html")
 
+def route(request):
+    return render(request,"login-route.html")
+
 def ownerslogin(request):
     referer = request.META.get('HTTP_REFERER')
     if referer:
@@ -65,9 +72,58 @@ def ownerslogin(request):
             return render(request, "ownerlogin.html", {"message": "Invalid credentials"})
     return render(request,"ownerlogin.html")
 def tenantsregister(request):
+    if request.method=="POST":
+        username=request.POST.get("username")
+        name=request.POST.get("name")
+        email=request.POST.get("email")
+        o_id=request.POST.get("nid")
+        passw=request.POST.get("password")
+        phone=request.POST.get("phone")
+        if User.objects.filter(email=email).exists():
+            return render(request,"tenantregister.html",{"message":"A tenant with the email already exists"})
+        if Tenant.objects.filter(tenant_id=o_id).exists():
+            return render(request,"tenantregister.html",{"message":"A tenant with the id already exists"})
+        if User.objects.filter(username=username).exists():
+            return render(request,"tenantregister.html",{"message":"A tenant with the username already exists"})
+        else:
+            try:
+                User.objects.create_user(username=username, email= email, password=passw)
+                tenant=Tenant(name=name,tenant_id=o_id,user=User.objects.get(email=email),phone=phone)
+                try:
+                    tenant.save()
+                except:
+                    print("Error:", e)
+                return redirect("tenantsslogin")
+            except:
+                try:
+                    User.objects.get(email=email).delete()
+                    return render(request,"tenantregister.html",{"message":"An error occured while trying to save!"})
+                except:
+                    return render(request,"tenantregister.html",{"message":"An error occured while trying to save1!"})
     return render(request,"tenantregister.html")
+
 def tenantslogin(request):
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        parsed_url = urlparse(referer)
+        # Get the path component of the URL
+        path = parsed_url.path
+        # Split the path by '/' and get the last part
+        last_part = path.strip('/').split('/')[-1]
+        if str(last_part)== "tenantregister":
+            return render(request, "tenantlogin.html", {"message": "Registered successfully"})
+    if request.method=="POST":
+        username=request.POST.get("username")
+        password=request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None :
+            if Owner.objects.filter(user=user).exists():
+                login(request, user)
+                return redirect('ownershome')  # Redirect to the home page after successful login
+        else:
+            return render(request, "tenantlogin.html", {"message": "Invalid credentials"})
     return render(request,"tenantlogin.html")
+        
 def tenantshome(request):
     return HttpResponse("tenant home")
 @login_required(login_url="ownerslogin")

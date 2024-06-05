@@ -5,7 +5,7 @@
   <link href="https://fonts.googleapis.com/css?family=Big+Shoulders+Text&display=swap" rel="stylesheet">
   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css'>
   <link rel='stylesheet' href='https://pro.fontawesome.com/releases/v5.10.2/css/all.css'>
-  <link rel='stylesheet' href='{% static "style.css"%}'>
+  <link rel='stylesheet' href='{% static "css/style.css"%}'>
 </head>
 <body>
  
@@ -243,7 +243,7 @@ body iframe {
 }
 </style>
 <div class="login-box">
-  <h2>Owner Login</h2>
+  <h2>Tenants Login</h2>
   <form action="{% url "tenantslogin" %}" method="POST">
     {% csrf_token %}
     <div class="user-box">
