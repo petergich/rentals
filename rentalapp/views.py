@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import os
+import logging
 message=""
 def home(request):
     houses = House.objects.all()
@@ -71,36 +72,41 @@ def ownerslogin(request):
         else:
             return render(request, "ownerlogin.html", {"message": "Invalid credentials"})
     return render(request,"ownerlogin.html")
+
+logger = logging.getLogger(__name__)
+
 def tenantsregister(request):
-    if request.method=="POST":
-        username=request.POST.get("username")
-        name=request.POST.get("name")
-        email=request.POST.get("email")
-        o_id=request.POST.get("nid")
-        passw=request.POST.get("password")
-        phone=request.POST.get("phone")
+    if request.method == "POST":
+        username = request.POST.get("username")
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        o_id = request.POST.get("nid")
+        passw = request.POST.get("password")
+        phone = request.POST.get("phone")
+        
         if User.objects.filter(email=email).exists():
-            return render(request,"tenantregister.html",{"message":"A tenant with the email already exists"})
+            return render(request, "tenantregister.html", {"message": "A tenant with the email already exists"})
+        
         if Tenant.objects.filter(tenant_id=o_id).exists():
-            return render(request,"tenantregister.html",{"message":"A tenant with the id already exists"})
+            return render(request, "tenantregister.html", {"message": "A tenant with the id already exists"})
+        
         if User.objects.filter(username=username).exists():
-            return render(request,"tenantregister.html",{"message":"A tenant with the username already exists"})
-        else:
-            try:
-                User.objects.create_user(username=username, email= email, password=passw)
-                tenant=Tenant(name=name,tenant_id=o_id,user=User.objects.get(email=email),phone=phone)
-                try:
-                    tenant.save()
-                except:
-                    print("Error:", e)
-                return redirect("tenantsslogin")
-            except:
-                try:
-                    User.objects.get(email=email).delete()
-                    return render(request,"tenantregister.html",{"message":"An error occured while trying to save!"})
-                except:
-                    return render(request,"tenantregister.html",{"message":"An error occured while trying to save1!"})
-    return render(request,"tenantregister.html")
+            return render(request, "tenantregister.html", {"message": "A tenant with the username already exists"})
+        
+        try:
+            user = User.objects.create_user(username=username, email=email, password=passw)
+            tenant = Tenant(name=name, tenant_id=o_id, user=user, phone=phone)
+            tenant.save()
+            return redirect("tenantslogin")
+        
+        except Exception as e:
+            logger.error("An error occurred while creating the tenant: %s", e)
+            if User.objects.filter(email=email).exists():
+                User.objects.get(email=email).delete()
+            
+            return render(request, "tenantregister.html", {"message": "An error occurred while trying to save: " + str(e)})
+
+    return render(request, "tenantregister.html")
 
 def tenantslogin(request):
     referer = request.META.get('HTTP_REFERER')
@@ -125,7 +131,7 @@ def tenantslogin(request):
     return render(request,"tenantlogin.html")
         
 def tenantshome(request):
-    return HttpResponse("tenant home")
+    return redirect("home")
 @login_required(login_url="ownerslogin")
 def ownershome(request):
     try:
