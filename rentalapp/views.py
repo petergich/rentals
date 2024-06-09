@@ -220,7 +220,7 @@ def tenants(request):
         o_houses=owner_houses(owner)
         housetenants=[]
         for house in o_houses:
-            tenants=htenants(house)
+            tenants=htenants(house,"all")
             if tenants:
                 housetenants.append({"house":house,"tenants":tenants})
         if housetenants !=[]:
@@ -243,7 +243,7 @@ def rooms(request):
             i_rooms=[]
             for instance in instances_rooms:
                 if instance.house==house:
-                    i_rooms.append(instance)
+                    i_rooms.append({"room":instance,"status":status(instance)})
             if i_rooms!=[]:
                 objects.append({"house":house,"rooms":i_rooms})
         return render(request, "rooms.html",{"objects":objects})
@@ -299,8 +299,11 @@ def room(request):
         owner=Owner.objects.get(user=request.user)
         roomid=request.GET.get("roomid")
         room=Room.objects.get(id=roomid)
-        
-        return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors),"tenant":status(room)})
+        if status(room):
+            print("here")
+            return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors),"tenant":status(room)})
+        else:
+            return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors)})
     except:
          logout(request)
          return redirect("ownerslogin")
@@ -315,6 +318,7 @@ def owner_houses(user):
         return House.objects.filter(owner=user)
     else:
         return None
+# Function to get the sub-counties for a given county
 def subcounties(request):
     county=request.GET.get("county")
     if county:
@@ -330,9 +334,8 @@ def wards(request):
        return JsonResponse({"wards":wards_instances})
     else:
         return redirect("addhouses")
+#function to get all the locations in Kenya. Counties, Sub-counties and wards from a csv file
 def locations():
-
-
     # Define the path to your CSV file
     csv_file_path = os.path.join(settings.BASE_DIR, 'rentalapp', 'files', 'locations.csv')
     # Create an empty list to store the data
@@ -445,7 +448,7 @@ def get_ordinal_suffix(n):
         # General cases
         suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
     return suffix
-
+#function for checking if a room is occupied, if occupied returns the object of the occupant
 def status(roomi):
     if Tenancy.objects.filter(room=roomi,is_current=True):
         return Tenancy.objects.get(room=roomi,is_current=True)
@@ -459,8 +462,19 @@ def isowner(request):
     except:
         return False
 #function for getting all the tenants in a given house
-def htenants(house):
-    if Tenancy.objects.filter(is_current=True,room__hhouse=house).exists():
-        return Tenancy.objects.filter(is_current=True,room__hhouse=house)
-    else:
-        return False
+def htenants(house,cat):
+    if cat=="all":
+        if Tenancy.objects.filter(room__house__name=house).exists():
+            return Tenancy.objects.filter(is_current=True,room__house__name=house)
+        else:
+            return False
+    if cat=="active":
+        if Tenancy.objects.filter(is_current=True,room__house__name=house).exists():
+            return Tenancy.objects.filter(is_current=True,room__house__name=house)
+        else:
+            return False
+    if cat=="past":
+        if Tenancy.objects.filter(is_current=False,room__house__name=house).exists():
+            return Tenancy.objects.filter(is_current=False,room__house__name=house)
+        else:
+            return False

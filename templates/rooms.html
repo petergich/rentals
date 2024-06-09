@@ -186,24 +186,30 @@
                 <th>ROOM NAME/NUMBER</th>
                 <th>TYPE</th>
                 <th>PAYMENT RATE</th>
-                <th>STATUS</th>
-                <th>PRICE</th>
                 <th>FLOOR</th>
+                <th>PRICE</th>
+                <th>STATUS</th>
+                <th>ACTION</th>
               </tr>
             </thead>
             <tbody>
               {% for room in house.rooms %}
-               <tr class="table rooms-row" onclick="popup({{room.id}})">
-                <td style="font-size:14px">{{room.house_number}}</td>
-                <td style="font-size:14px">{{room.htype}}</td>
-                <td style="font-size:14px">{{room.rate}}</td>
-                {% if room.tenant%}
-                <td class="m-2"style="color:white;font-size:14px;background-color:rgba(100,0,0,0.1);border-radius:10px;">Occupied</td>
+               <tr class="table rooms-row" onclick="popup({{room.room.id}})">
+                <td style="font-size:14px">{{room.room.house_number}}</td>
+                <td style="font-size:14px">{{room.room.htype}}</td>
+                <td style="font-size:14px">{{room.room.rate}}</td>
+                <td style="font-size:14px">{{room.room.floor}}</td>
+                <td style="font-size:14px">{{room.room.price}} KSH</td>
+                {% if room.status%}
+                <td class=""style="color:black;font-size:14px;background:rgba(100,0,0,0.4)">Occupied</td>
                 {% else%}
-                <td class="m-2"style="color:white;font-size:14px;background-color:rgba(0,100,0.1);border-radius:10px;">Vacant</td>
+                <td class="p-2"style="color:black;font-size:14px;background:rgba(50,100,0,0.4)">Vacant</td>
                 {% endif %}
-                <td style="font-size:14px">{{room.price}} KSH</td>
-                <td style="font-size:14px">{{room.floor}}</td>
+                {% if room.status%}
+                <td class="p-2"style="font-size:14px"><button class="btn btn-secondary mb-4">Vacate</button><button class="btn btn-danger"><i class="fas fa-trash-alt"></i>delete room</button></td>
+                {% else%}
+                <td class="p-2"style="font-size:14px"><button class="btn btn-success mb-4">Add tenant</button><button class="btn btn-danger"><i class="fas fa-trash-alt"></i>delete room</button></td>
+                {% endif %}
               </tr>
               {% endfor %}
             </tbody>
