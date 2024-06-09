@@ -148,40 +148,47 @@
         <img style="position:relative;max-height:2%" src="{% static 'img/logo.png' %}">
       </header>
       <main style="position:relative;top:10vh">
+        <form action="{% url "addtenant"%}?room={{room}}" method="POST">
+        {% csrf_token %}
         <div class="card ">
             <div class="col-md-6">
                 <div class="input-field">
                   <label class="label">NAME</label><br>
-                  <input id="name"type="text" name="name" placeholder="Enter your name">
+                  <input id="name"type="text" name="name" required placeholder="Enter your name">
                   <!--<small id="error" class="form-text text-danger error">Please enter a valid number.</small>-->   
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="input-field">
                   <label class="label">ID NUMBER</label><br>
-                  <input id="name"type="text" name="name" placeholder="Enter your name">
+                  <input id="idnumber"type="text" name="idnumber" required placeholder="Enter your ID NO">
                 </div>
             </div>
             <div class="col-md-6">
               <div class="input-field">
-                <label class="label">ID NUMBER</label><br>
-                <input id="name"type="text" name="name" placeholder="Enter your name">
+                <label class="label">PHONE NO</label><br>
+                <input id="phone"type="text" name="phone" required placeholder="Example:254712345678">
+                
               </div>
           </div>
+          <div class="col-md-6 mb-4">
+            <button style="" type="submit"class="btn btn-primary">Add</button>
+        </div>
           
 
         </div>
+      </form>
       </main>
       <footer style="bottom-margin:0;">
         <p style="text-align: center;">Copyright &#169; 2024 Lunertechs. All Rights Reserved.</p>
       </footer>
-      {% if messages %}
+      {% if message %}
     <div class="messages">
-      {% for message in messages %}
+    
       <script>
         alert("{{ message }}");
       </script>
-      {% endfor %}
+     
     </div>
     {% endif %}
   </body>

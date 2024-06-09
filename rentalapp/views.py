@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import csv
 from django.contrib.auth.models import User
 from .models import * 
-from django.contrib.auth import login, authenticate,logout as auth_logout
+from django.contrib.auth import login, authenticate,logout as auth_logout,logout
 from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -11,6 +11,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import os
 import logging
+import datetime
 message=""
 def home(request):
     houses = House.objects.all()
@@ -134,15 +135,14 @@ def tenantshome(request):
     return redirect("home")
 @login_required(login_url="ownerslogin")
 def ownershome(request):
-    try:
-        
+    if isowner(request):
         owner=Owner.objects.get(user=request.user)
         o_houses=owner_houses(owner)
         if message!="":
             alert=message
             return render(request, "ownershome.html",{"houses":o_houses,"owner":owner,"message":alert})
         return render(request, "ownershome.html",{"houses":o_houses,"owner":owner,})
-    except:
+    else:
         logout(request)
         return redirect("ownerslogin")
 @login_required(login_url="ownerslogin")
@@ -212,10 +212,25 @@ def addrooms(request):
     except:
         logout(request)
         return redirect("ownerslogin")
-# Create your views here.
+#view for displaying all tenants for the given owner
 @login_required(login_url="ownerslogin")
 def tenants(request):
-    return render(request,"tenants.html")
+    if isowner(request):
+        owner=Owner.objects.get(user=request.user)
+        o_houses=owner_houses(owner)
+        housetenants=[]
+        for house in o_houses:
+            tenants=htenants(house)
+            if tenants:
+                housetenants.append({"house":house,"tenants":tenants})
+        if housetenants !=[]:
+            return render(request,"tenants.html",{"objects":housetenants})
+        else:
+             return render(request,"tenants.html")
+    else:
+        logout(request)
+        return redirect("ownerslogin")
+#view for displaying all the rooms on the owners house
 @login_required(login_url="ownerslogin")
 def rooms(request):
     try:
@@ -235,20 +250,61 @@ def rooms(request):
     except:
          logout(request)
          return redirect("ownerslogin")
+#view for adding a tenant to a given room
 @login_required(login_url="ownerslogin")
 def addtenant(request):
-    return render(request,"addtenant.html")
+    if request.method=="POST":
+        room=request.GET.get("room")
+        if room:
+            name=request.POST.get("name")
+            idnumber=request.POST.get("idnumber")
+            phone=request.POST.get("phone")
+            if Tenant.objects.filter(tenant_id=idnumber).exists():
+                ten=Tenant.objects.get(tenant_id=idnumber)
+                ten.phone=phone
+                ten.save()
+            else:
+                if Tenant.objects.filter(phone=phone).exists():
+                     return render(request,"addtenant.html",{"room":room,"message":"A tenant with the phone number already exists"})
+                Tenant.objects.create(
+                    name=name,
+                    phone=phone,
+                    tenant_id=idnumber,
+                )
+            tenancies=Tenancy.objects.filter(room=Room.objects.get(id=room))
+            for ten in tenancies:
+                if ten.is_current:
+                    return render(request,"addtenant.html",{"room":room,"message":"This room is occupied. Please vacate the room first"})
+            Tenancy.objects.create(
+                tenant=Tenant.objects.get(tenant_id=idnumber),
+                room=Room.objects.get(id=room),
+                start_date=datetime.date.today()
+                
+            )
+        else:
+            return redirect("rooms")
+    room=request.GET.get("room")
+    if room:
+        tenancies=Tenancy.objects.filter(room=Room.objects.get(id=room))
+        for ten in tenancies:
+            if ten.is_current:
+                return redirect("rooms")
+        return render(request,"addtenant.html",{"room":room})
+    else:
+        return redirect("rooms")
+#View for displaying a given room in a given house
 @login_required(login_url="ownerslogin")
 def room(request):
-    # try:
+    try:
         owner=Owner.objects.get(user=request.user)
         roomid=request.GET.get("roomid")
         room=Room.objects.get(id=roomid)
         
-        return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors)})
-    # except:
-    #      logout(request)
-    #      return redirect("ownerslogin")
+        return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors),"tenant":status(room)})
+    except:
+         logout(request)
+         return redirect("ownerslogin")
+#view for the owner's profile
 @login_required(login_url="ownerslogin")
 def ownersprofile(request):
     return render(request, "ownersprofile.html")
@@ -358,6 +414,7 @@ def wardsdata(county,subcounty):
                     for ward in sub_county["wards"]:
                         wards_inst.append(ward)
                     return wards_inst
+#function for deleting a house
 def deletehouse(request,instance_id):
     house=House.objects.get(id=instance_id)
     try:
@@ -365,6 +422,7 @@ def deletehouse(request,instance_id):
         return JsonResponse({"message":"Deleted succesfully"})
     except:
         return JsonResponse({"message":"Unable to delete, Please contact support"})
+#function for geting the floor names based on the number of the floors of the house
 def get_floor_names(up_to_floor):
     print("floor",up_to_floor)
     # Initialize an empty list to hold the floor names
@@ -388,3 +446,21 @@ def get_ordinal_suffix(n):
         suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
     return suffix
 
+def status(roomi):
+    if Tenancy.objects.filter(room=roomi,is_current=True):
+        return Tenancy.objects.get(room=roomi,is_current=True)
+    else:
+        return None
+# Test if the user is an owner
+def isowner(request):
+    try:
+        owner=Owner.objects.get(user=request.user)
+        return Owner.objects.get(user=request.user)
+    except:
+        return False
+#function for getting all the tenants in a given house
+def htenants(house):
+    if Tenancy.objects.filter(is_current=True,room__hhouse=house).exists():
+        return Tenancy.objects.filter(is_current=True,room__hhouse=house)
+    else:
+        return False

@@ -149,9 +149,13 @@
         <img style="position:relative;max-height:2%" src="{% static 'img/logo.png' %}">
       </header>
       <main style="position:relative;top:10vh">
+        {% if "tenanat"%}
+        <div class="card m-4 p-4 align-items-center"><a class="align-self-center" href="{% url "addtenant" %}?room={{ room.id }}"><button style="margin-left:0"class="btn btn-danger">Vacate Room</button><a>
+        {% else %}
         <div class="card m-4 p-4 align-items-center"><a class="align-self-center" href="{% url "addtenant" %}?room={{ room.id }}"><button style="margin-left:0"class="btn btn-primary">Add Tenant</button><a>
+        {% endif %}
         </div>
-            <form action="{% url 'addrooms' %}?houseid={{ house }}" method="POST">
+            <form action="{% url 'room' %}?houseid={{ house }}" method="POST">
           {% csrf_token %}
         <div class="card p-4">
             <div class="align-items-right">
