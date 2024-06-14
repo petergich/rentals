@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import csv
 from django.contrib.auth.models import User
 from .models import * 
@@ -12,6 +12,7 @@ from django.conf import settings
 import os
 import logging
 import datetime
+
 message=""
 def home(request):
     houses = House.objects.all()
@@ -300,7 +301,7 @@ def room(request):
         roomid=request.GET.get("roomid")
         room=Room.objects.get(id=roomid)
         if status(room):
-            print("here")
+    
             return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors),"tenant":status(room)})
         else:
             return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors)})
@@ -313,7 +314,8 @@ def ownersprofile(request):
     return render(request, "ownersprofile.html")
 @login_required(login_url="ownerslogin")
 def gettenant(request):
-    print("called")
+    print("this",Tenancy.objects.get(room__id=request.Get.get("room")))
+    obj=Tenancy.objects.get(room__id=request.GET.get("room"))
     return None
 def gallery(request):
     return (request,"gallery.html")
@@ -408,7 +410,7 @@ def subcountiesdata(county):
             subcountieslist=[]
             for sub_county in location["subcounty"]:
                 subcountieslist.append(sub_county["subcounty"])
-            print(subcountieslist)
+           
             return subcountieslist
 def wardsdata(county,subcounty):
     locations_data=locations()
@@ -431,7 +433,7 @@ def deletehouse(request,instance_id):
         return JsonResponse({"message":"Unable to delete, Please contact support"})
 #function for geting the floor names based on the number of the floors of the house
 def get_floor_names(up_to_floor):
-    print("floor",up_to_floor)
+   
     # Initialize an empty list to hold the floor names
     floor_names = []
     

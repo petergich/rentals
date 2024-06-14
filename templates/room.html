@@ -83,29 +83,65 @@
         justify-content: center;
     }
     .popup {
+        min-width:max-content;
         background: white;
         padding: 10px;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
         align-items: center;
-        justify-content: center;;
+        justify-content: center;
     }
+    .inline-content {
+      display: inline-block;
+      white-space: nowrap;
+      border:1px solid black;
+      width:max-content;
+      padding:5px;
+      border-radius:5px;
+      color:black
+
+  }
+  .close-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+}
+.hide{
+  display:none;
+}
+
     </style>
   </head>
   <body>
-    <div class="overlay">
-      <div class="popup">
-        <h2 style="">CLIENT</h2>
+    <div id="overlay"class="overlay hide">
+      <div id="popup"class="popup">
+        <div style="display:flex;justify-content:space-between;">
+        <h2 class=""style="margin-left:20px;text-align:center;font:bold;">Tenant</h2>
+        <span class="" onclick="closePopup()"><img src="{% static "images\close.png"%}"/></span>
+        </div>
         <div class="col-md-6">
           <div class="input-field">
-           <h5>Name:</h5>
+           <h5 class="inline-content">Name: Peter Kamau</h5>
           </div>
       </div>
       <div class="col-md-6">
         <div class="input-field">
-          <p>Name:</p>
+          <p class="inline-content">ID NO: 39431140</p>
         </div>
     </div>
+    <div class="col-md-6">
+      <div class="input-field">
+        <p class="inline-content">ROOM: B0020</p>
+      </div>
+  </div>
+  <div class="col-md-6">
+    <div class="input-field">
+      <p class="inline-content">ARREARS: 50,000 rent</p>
+    </div>
+</div>
       </div>
   </div>
     <input type="checkbox" id="nav-toggle" />
@@ -184,7 +220,7 @@
       </header>
       <main style="position:relative;top:10vh">
         {% if tenant %}
-        <div class="card m-4 p-4 align-items-center"><a class="align-self-center" href="{% url "addtenant" %}?room={{ room.id }}"><button style="margin-left:0"class="btn btn-danger">Vacate Room</button><a>
+        <div class="card m-4 p-4 align-items-center"><button onclick="openPopup({{room.id}})"style="margin-left:0"class="btn btn-danger">Vacate Room</button>
         {% else %}
         <div class="card m-4 p-4 align-items-center"><a class="align-self-center" href="{% url "addtenant" %}?room={{ room.id }}"><button style="margin-left:0"class="btn btn-primary">Add Tenant</button><a>
         {% endif %}
@@ -295,23 +331,41 @@
         <p style="text-align: center;">Copyright &#169; 2024 Lunertechs. All Rights Reserved.</p>
       </footer>
       <script>
-        function gettenant(room){
-        fetch('{% url "gettenant"%}?room='+room)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(data);
-            document.getElementById('result').innerText = JSON.stringify(data, null, 2);
-        })
-        .catch(error => {
-            console.error('There has been a problem with your fetch operation:', error);
-            document.getElementById('result').innerText = 'Fetch error: ' + error.message;
-        });
-      }
+        
+        function openPopup(room){
+          var tenant=gettenant(room)
+          const elem=document.getElementById("overlay");
+          elem.classList.remove("hide");
+        }
+        function closePopup(){
+          const elem=document.getElementById("overlay");
+          elem.classList.add("hide");
+        }
+        /*function handleClickOutside(event) {
+          const popup = document.getElementById('popup');
+          if (!popup.contains(event.target)) {
+              closePopup();
+          }
+      }*/
+      document.addEventListener('click', handleClickOutside);
+      function gettenant(room) {
+        fetch(`{% url "gettenant" %}?room=${encodeURIComponent(room)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+                document.getElementById('result').innerText = 'Fetch error: ' + error.message;
+            });
+    }
+    
       </script>
       {% if messages %}
     <div class="messages">
