@@ -71,9 +71,43 @@
       .hide{
         display:none;
       }
+      .overlay {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        z-index: 100000000;
+        background: rgba(100, 100, 100, 0.5);
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .popup {
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
+        align-items: center;
+        justify-content: center;;
+    }
     </style>
   </head>
   <body>
+    <div class="overlay">
+      <div class="popup">
+        <h2 style="">CLIENT</h2>
+        <div class="col-md-6">
+          <div class="input-field">
+           <h5>Name:</h5>
+          </div>
+      </div>
+      <div class="col-md-6">
+        <div class="input-field">
+          <p>Name:</p>
+        </div>
+    </div>
+      </div>
+  </div>
     <input type="checkbox" id="nav-toggle" />
     <div class="sidebar">
       <div class="sidebar-brand">
@@ -260,6 +294,25 @@
       <footer style="bottom-margin:0;">
         <p style="text-align: center;">Copyright &#169; 2024 Lunertechs. All Rights Reserved.</p>
       </footer>
+      <script>
+        function gettenant(room){
+        fetch('{% url "gettenant"%}?room='+room)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+            document.getElementById('result').innerText = 'Fetch error: ' + error.message;
+        });
+      }
+      </script>
       {% if messages %}
     <div class="messages">
       {% for message in messages %}

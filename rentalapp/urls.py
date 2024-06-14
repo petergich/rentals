@@ -22,4 +22,5 @@ urlpatterns = [
     path("addrooms",views.addrooms,name="addrooms"), 
     path("room",views.room,name="room"),
     path("addtenant",views.addtenant,name="addtenant"),
+    path("gettenant",views.gettenant,name="gettenant"),
 ]

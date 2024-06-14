@@ -188,29 +188,38 @@
                 <th>PAYMENT RATE</th>
                 <th>FLOOR</th>
                 <th>PRICE</th>
-                <th>STATUS</th>
+                
                 <th>ACTION</th>
+                <th>DELETE</th>
               </tr>
             </thead>
             <tbody>
               {% for room in house.rooms %}
-               <tr class="table rooms-row" onclick="popup({{room.room.id}})">
+              {% if room.status%}
+              <tr style="background:rgba(250,0,0,0.1);"class="table rooms-row" onclick="popup({{room.room.id}})">
                 <td style="font-size:14px">{{room.room.house_number}}</td>
                 <td style="font-size:14px">{{room.room.htype}}</td>
                 <td style="font-size:14px">{{room.room.rate}}</td>
                 <td style="font-size:14px">{{room.room.floor}}</td>
                 <td style="font-size:14px">{{room.room.price}} KSH</td>
-                {% if room.status%}
-                <td class=""style="color:black;font-size:14px;background:rgba(100,0,0,0.4)">Occupied</td>
-                {% else%}
-                <td class="p-2"style="color:black;font-size:14px;background:rgba(50,100,0,0.4)">Vacant</td>
-                {% endif %}
-                {% if room.status%}
-                <td class="p-2"style="font-size:14px"><button class="btn btn-secondary mb-4">Vacate</button><button class="btn btn-danger"><i class="fas fa-trash-alt"></i>delete room</button></td>
-                {% else%}
-                <td class="p-2"style="font-size:14px"><button class="btn btn-success mb-4">Add tenant</button><button class="btn btn-danger"><i class="fas fa-trash-alt"></i>delete room</button></td>
-                {% endif %}
+                
+                <td class=""style="font-size:14px;"><button class="btn btn-secondary">vacate room</button></td>
+                <td class="p-2"style="font-size:14px"><button class="btn btn-danger"><i class="fas fa-trash-alt"></i>delete room</button></td>
               </tr>
+                {% else%}
+                <tr style="background:rgba(0,250,0,0.1);"class="table rooms-row" onclick="popup({{room.room.id}})">
+                  <td style="font-size:14px">{{room.room.house_number}}</td>
+                  <td style="font-size:14px">{{room.room.htype}}</td>
+                  <td style="font-size:14px">{{room.room.rate}}</td>
+                  <td style="font-size:14px">{{room.room.floor}}</td>
+                  <td style="font-size:14px">{{room.room.price}} KSH</td>
+                  
+                  <td class=""style="font-size:14px;"><button class="btn btn-success">add tenant</button></td>
+               
+                  <td class="p-2"style="font-size:14px"><button class="btn btn-danger"><i class="fas fa-trash-alt"></i>delete room</button></td>
+                </tr>
+              
+              {% endif%}
               {% endfor %}
             </tbody>
           </table>

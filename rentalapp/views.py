@@ -311,6 +311,10 @@ def room(request):
 @login_required(login_url="ownerslogin")
 def ownersprofile(request):
     return render(request, "ownersprofile.html")
+@login_required(login_url="ownerslogin")
+def gettenant(request):
+    print("called")
+    return None
 def gallery(request):
     return (request,"gallery.html")
 def owner_houses(user):
