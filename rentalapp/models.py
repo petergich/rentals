@@ -76,7 +76,7 @@ class Room(models.Model):
     price = models.IntegerField(default=0)
     floor=models.CharField(max_length=50,default="ground")
 
-    def __str__(self):
+    def __str__(self): 
         return self.house_number
 
 class Tenancy(models.Model):
@@ -85,6 +85,5 @@ class Tenancy(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True)
-
     def __str__(self):
         return self.tenant.name

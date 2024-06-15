@@ -153,6 +153,7 @@
         <form action="{% url 'addrooms' %}?houseid={{ house }}" method="POST">
           {% csrf_token %}
         <div class="card p-4">
+          <h2 style="text-align:center;color:blue">ENTER ROOM DETAILS</h2>
             <div class="col-md-6">
                 <div class="input-field">
                   <label class="label">ROOM NAME/NUMBER</label><br>

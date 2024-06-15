@@ -122,25 +122,38 @@
         <h2 class=""style="margin-left:20px;text-align:center;font:bold;">Tenant</h2>
         <span class="" onclick="closePopup()"><img src="{% static "images\close.png"%}"/></span>
         </div>
+        <hr>
         <div class="col-md-6">
           <div class="input-field">
-           <h5 class="inline-content">Name: Peter Kamau</h5>
+           <h5 class="inline-content">Name: <span>{{tenant.tenant.name}}</span></h5>
           </div>
       </div>
       <div class="col-md-6">
         <div class="input-field">
-          <p class="inline-content">ID NO: 39431140</p>
+          <h5 class="inline-content">ID NO: <span>{{tenant.tenant.tenant_id}}</span></h5>
         </div>
     </div>
     <div class="col-md-6">
       <div class="input-field">
-        <p class="inline-content">ROOM: B0020</p>
+        <h5 class="inline-content">START DATE: <span>{{tenant.start_date}}</span></h5>
+      </div>
+  </div>
+    <div class="col-md-6">
+      <div class="input-field">
+        <h5 class="inline-content">ROOM: <span>{{tenant.room}}</span></h5>
       </div>
   </div>
   <div class="col-md-6">
     <div class="input-field">
-      <p class="inline-content">ARREARS: 50,000 rent</p>
+      <h5 class="inline-content">ARREARS: --null</h5>
     </div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; gap: 10px;">
+  <button onclick="removetenant('{{tenant.id}}')"class="btn btn-primary" style="padding: 10px 20px; font-size: 14px;">Confirm</button>
+  <select id="action"style="padding: 5px 10px; font-size: 14px;">
+    <option value="clear" selected>Clear all charges</option>
+    <option value="dontclear">Don't clear</option>
+  </select>
 </div>
       </div>
   </div>
@@ -331,41 +344,41 @@
         <p style="text-align: center;">Copyright &#169; 2024 Lunertechs. All Rights Reserved.</p>
       </footer>
       <script>
-        
+        function removetenant(tenant){
+          var action=document.getElementById("action").value;
+          fetch("{% url "removetenant" %}?tenant="+encodeURIComponent(tenant)+"&action="+encodeURIComponent(action))
+              .then(response => {
+                  if (!response.ok) {
+                      throw new Error('Network response was not ok ' + response.statusText);
+                  }
+                  return response.json();
+              })
+              .then(data => {
+                  if (data.error) {
+                      console.error(data.error);
+                      location.reload();
+                  } else {
+                      alert(data.data);
+                      location.reload();
+                  }
+              })
+              .catch(error => {
+                  alert('There has been a problem with your fetch operation:', error);
+                  location.reload();
+              });
+
+        }
         function openPopup(room){
-          var tenant=gettenant(room)
           const elem=document.getElementById("overlay");
-          elem.classList.remove("hide");
+          elem.classList.remove("hide")
         }
         function closePopup(){
           const elem=document.getElementById("overlay");
           elem.classList.add("hide");
         }
-        /*function handleClickOutside(event) {
-          const popup = document.getElementById('popup');
-          if (!popup.contains(event.target)) {
-              closePopup();
-          }
-      }*/
-      document.addEventListener('click', handleClickOutside);
-      function gettenant(room) {
-        fetch(`{% url "gettenant" %}?room=${encodeURIComponent(room)}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                document.getElementById('result').innerText = JSON.stringify(data, null, 2);
-            })
-            .catch(error => {
-                console.error('There has been a problem with your fetch operation:', error);
-                document.getElementById('result').innerText = 'Fetch error: ' + error.message;
-            });
-    }
-    
+     
+      
+      
       </script>
       {% if messages %}
     <div class="messages">

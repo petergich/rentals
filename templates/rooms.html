@@ -178,8 +178,12 @@
         <div class="scrollable-table">
           {% for house in objects%}
           <hr>
+          <h2 style="text-align:center;color:blue">ROOMS</h2>
           <div style="min-width:max-content;"class="card p-3 ">
-          <h2>{{house.house.name}}
+            <div style="display:flex;justify-content:space-between;">
+              <h2>{{house.house.name}}</h2>
+              <button class="btn btn-secondary m-3" onclick="addroom({{house.house.id}})">Add room<i class="fas fa-door-open"></i></button>
+            </div>
           <table class="table">
             <thead>
               <tr class="bg-info">
@@ -214,7 +218,7 @@
                   <td style="font-size:14px">{{room.room.floor}}</td>
                   <td style="font-size:14px">{{room.room.price}} KSH</td>
                   
-                  <td class=""style="font-size:14px;"><button class="btn btn-success">add tenant</button></td>
+                  <td class=""style="font-size:14px;"><button onclick="addtenant('{{room.room.id}}')"class="btn btn-success">add tenant</button></td>
                
                   <td class="p-2"style="font-size:14px"><button class="btn btn-danger"><i class="fas fa-trash-alt"></i>delete room</button></td>
                 </tr>
@@ -231,8 +235,15 @@
         <p style="text-align: center;">Copyright &#169; 2024 Lunertechs. All Rights Reserved.</p>
       </footer>
       <script>
+        function addroom(houseid){
+          window.location.href="{% url "addrooms" %}?&houseid="+encodeURIComponent(houseid)
+        }
+        function addtenant(id){
+          url="{% url "addtenant" %}?room="+encodeURIComponent(id);
+          window.location.href=url;
+        }
         function popup(roomid) {
-          const url = "{% url 'room' %}?roomid=" + encodeURIComponent(roomid);
+          const url = "{% url 'room' %}?room=" + encodeURIComponent(roomid);
           window.location.href = url;
       }
       </script>

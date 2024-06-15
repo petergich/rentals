@@ -296,27 +296,43 @@ def addtenant(request):
 #View for displaying a given room in a given house
 @login_required(login_url="ownerslogin")
 def room(request):
-    try:
+    # try:
+        
         owner=Owner.objects.get(user=request.user)
-        roomid=request.GET.get("roomid")
+        roomid=request.GET.get("room")
+        print(roomid)
         room=Room.objects.get(id=roomid)
+        
         if status(room):
-    
             return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors),"tenant":status(room)})
         else:
             return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors)})
-    except:
-         logout(request)
-         return redirect("ownerslogin")
+    # except:
+    #      logout(request)
+    #      return redirect("ownerslogin")
 #view for the owner's profile
 @login_required(login_url="ownerslogin")
 def ownersprofile(request):
     return render(request, "ownersprofile.html")
 @login_required(login_url="ownerslogin")
-def gettenant(request):
-    print("this",Tenancy.objects.get(room__id=request.Get.get("room")))
-    obj=Tenancy.objects.get(room__id=request.GET.get("room"))
-    return None
+def removetenant(request):
+    if isowner(request):
+        tenant=request.GET.get("tenant")
+        action=request.GET.get("action")
+        try:
+            tenant=Tenancy.objects.get(id=tenant,is_current=True)
+            tenant.is_current=False
+            tenant.end_date=datetime.date.today()
+            try:
+                tenant.save()
+                return JsonResponse({"data":"Successfully vacated"})
+            except:
+                return JsonResponse({"data":"Unable to vacate tenant please contact support"})
+        except:
+            return JsonResponse({"data":"Unable to find the tenant. Please contact support"})
+    else:
+         logout(request)
+         return redirect("ownerslogin")
 def gallery(request):
     return (request,"gallery.html")
 def owner_houses(user):
@@ -471,7 +487,7 @@ def isowner(request):
 def htenants(house,cat):
     if cat=="all":
         if Tenancy.objects.filter(room__house__name=house).exists():
-            return Tenancy.objects.filter(is_current=True,room__house__name=house)
+            return Tenancy.objects.filter(room__house__name=house)
         else:
             return False
     if cat=="active":
