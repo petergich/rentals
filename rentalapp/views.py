@@ -12,7 +12,8 @@ from django.conf import settings
 import os
 import logging
 import datetime
-
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 message=""
 def home(request):
     houses = House.objects.all()
@@ -254,12 +255,16 @@ def rooms(request):
 #view for adding a tenant to a given room
 @login_required(login_url="ownerslogin")
 def addtenant(request):
+    print("clicked")
     if request.method=="POST":
         room=request.GET.get("room")
         if room:
+            date_str=request.POST.get("date")
             name=request.POST.get("name")
             idnumber=request.POST.get("idnumber")
             phone=request.POST.get("phone")
+            print(date_str)
+            date = datetime.strptime(date_str, '%Y-%m-%d')
             if Tenant.objects.filter(tenant_id=idnumber).exists():
                 ten=Tenant.objects.get(tenant_id=idnumber)
                 ten.phone=phone
@@ -279,8 +284,24 @@ def addtenant(request):
             Tenancy.objects.create(
                 tenant=Tenant.objects.get(tenant_id=idnumber),
                 room=Room.objects.get(id=room),
-                start_date=datetime.date.today()
+                start_date=date,
+                last_charged=date,
+                arrears=Room.objects.get(id=room).price,
                 
+            )
+            
+            period_type=""
+            if Room.objects.get(id=room).rate=="daily":
+                period_type="daily"
+            if Room.objects.get(id=room).rate=="monthly":
+                period_type="monthly"
+            if Room.objects.get(id=room).rate=="yearly":
+                period_type="yearly"
+            Rent.objects.create(
+                amount=Room.objects.get(id=room).price,
+                tenancy=Tenancy.objects.get(is_current=True,room=Room.objects.get(id=room)),
+                name="Rent for the period"+str(date) +" to "+add_period(date,1,period_type),  
+                start_date=date
             )
         else:
             return redirect("rooms")
@@ -500,3 +521,9 @@ def htenants(house,cat):
             return Tenancy.objects.filter(is_current=False,room__house__name=house)
         else:
             return False
+#function to find the end of the charging period mainly used when creating charges
+def add_period(date_str,num_months,period_type):
+    # Parse the date string to a datetime object
+    # Add one month to the date object
+    new_date = date_str + relativedelta(months=num_months)
+    return new_date

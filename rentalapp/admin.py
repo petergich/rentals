@@ -8,4 +8,5 @@ admin.site.register(Tenancy)
 admin.site.register(House)
 admin.site.register(Photo)
 admin.site.register(Room)
+admin.site.register(Rent)
 # Register your models here.

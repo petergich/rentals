@@ -218,7 +218,7 @@
                   <td style="font-size:14px">{{room.room.floor}}</td>
                   <td style="font-size:14px">{{room.room.price}} KSH</td>
                   
-                  <td class=""style="font-size:14px;"><button onclick="addtenant('{{room.room.id}}')"class="btn btn-success">add tenant</button></td>
+                  <td class=""style="font-size:14px;"><button style="z-index:100000;" onclick="addtenant('{{room.room.id}}')"class="btn btn-success">add tenant</button></td>
                
                   <td class="p-2"style="font-size:14px"><button class="btn btn-danger"><i class="fas fa-trash-alt"></i>delete room</button></td>
                 </tr>
@@ -239,7 +239,8 @@
           window.location.href="{% url "addrooms" %}?&houseid="+encodeURIComponent(houseid)
         }
         function addtenant(id){
-          url="{% url "addtenant" %}?room="+encodeURIComponent(id);
+          alert("called")
+          var url="{% url 'addtenant' %}?room="+encodeURIComponent(id);
           window.location.href=url;
         }
         function popup(roomid) {
