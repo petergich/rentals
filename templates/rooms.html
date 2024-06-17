@@ -195,12 +195,13 @@
                 
                 <th>ACTION</th>
                 <th>DELETE</th>
+                
               </tr>
             </thead>
             <tbody>
               {% for room in house.rooms %}
               {% if room.status%}
-              <tr style="background:rgba(250,0,0,0.1);"class="table rooms-row" onclick="popup({{room.room.id}})">
+              <tr style="background:rgba(250,0,0,0.1);cursor:pointer;"class="table rooms-row" onclick="popup({{room.room.id}})">
                 <td style="font-size:14px">{{room.room.house_number}}</td>
                 <td style="font-size:14px">{{room.room.htype}}</td>
                 <td style="font-size:14px">{{room.room.rate}}</td>
@@ -211,14 +212,14 @@
                 <td class="p-2"style="font-size:14px"><button class="btn btn-danger"><i class="fas fa-trash-alt"></i>delete room</button></td>
               </tr>
                 {% else%}
-                <tr style="background:rgba(0,250,0,0.1);"class="table rooms-row" onclick="popup({{room.room.id}})">
+                <tr style="background:rgba(0,250,0,0.1);cursor:pointer;"class="table rooms-row" onclick="popup({{room.room.id}})">
                   <td style="font-size:14px">{{room.room.house_number}}</td>
                   <td style="font-size:14px">{{room.room.htype}}</td>
                   <td style="font-size:14px">{{room.room.rate}}</td>
                   <td style="font-size:14px">{{room.room.floor}}</td>
                   <td style="font-size:14px">{{room.room.price}} KSH</td>
                   
-                  <td class=""style="font-size:14px;"><button style="z-index:100000;" onclick="addtenant('{{room.room.id}}')"class="btn btn-success">add tenant</button></td>
+                  <td onclick="addtenant('{{room.room.id}}')"class=""style="font-size:14px;"><button class="btn btn-success">add tenant</button></td>
                
                   <td class="p-2"style="font-size:14px"><button class="btn btn-danger"><i class="fas fa-trash-alt"></i>delete room</button></td>
                 </tr>
@@ -239,11 +240,12 @@
           window.location.href="{% url "addrooms" %}?&houseid="+encodeURIComponent(houseid)
         }
         function addtenant(id){
-          alert("called")
+          
           var url="{% url 'addtenant' %}?room="+encodeURIComponent(id);
           window.location.href=url;
         }
         function popup(roomid) {
+          console.log("called")
           const url = "{% url 'room' %}?room=" + encodeURIComponent(roomid);
           window.location.href = url;
       }

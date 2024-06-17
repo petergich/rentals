@@ -297,10 +297,12 @@ def addtenant(request):
                 period_type="monthly"
             if Room.objects.get(id=room).rate=="yearly":
                 period_type="yearly"
+            start_date=date.strftime('%Y-%m-%d')
+            end_date_str = add_period(date, 1, period_type)
             Rent.objects.create(
                 amount=Room.objects.get(id=room).price,
                 tenancy=Tenancy.objects.get(is_current=True,room=Room.objects.get(id=room)),
-                name="Rent for the period"+str(date) +" to "+add_period(date,1,period_type),  
+                name=f"Rent for {start_date} to {end_date_str}", 
                 start_date=date
             )
         else:
@@ -317,7 +319,7 @@ def addtenant(request):
 #View for displaying a given room in a given house
 @login_required(login_url="ownerslogin")
 def room(request):
-    # try:
+    try:
         
         owner=Owner.objects.get(user=request.user)
         roomid=request.GET.get("room")
@@ -328,9 +330,9 @@ def room(request):
             return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors),"tenant":status(room)})
         else:
             return render(request, "room.html",{"room":room,"floors":get_floor_names(room.house.no_floors)})
-    # except:
-    #      logout(request)
-    #      return redirect("ownerslogin")
+    except:
+         logout(request)
+         return redirect("ownerslogin")
 #view for the owner's profile
 @login_required(login_url="ownerslogin")
 def ownersprofile(request):
@@ -343,7 +345,7 @@ def removetenant(request):
         try:
             tenant=Tenancy.objects.get(id=tenant,is_current=True)
             tenant.is_current=False
-            tenant.end_date=datetime.date.today()
+            tenant.end_date=datetime.today().date()
             try:
                 tenant.save()
                 return JsonResponse({"data":"Successfully vacated"})

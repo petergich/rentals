@@ -188,6 +188,7 @@
                 <th>TENANT PHONE</th>
                 <th>ROOM</th>
                 <th>STATUS</th>
+                <th>ARREARS</th>
                 <th>START DATE</th>
                 <th>END DATE</th>
               </tr>
@@ -205,6 +206,7 @@
                 {% else %}
                 <td style="color:black;font-size:14px;background-color:rgba(150,30,30,0.5);">former</td>
                 {% endif%}
+                <td style="font-size:14px">{{tenant.arrears}}KSH</td>
                 <td style="font-size:14px">{{tenant.start_date}}</td>
                 {% if tenant.end_date == Null%}
                 <td style="font-size:14px;font-style:italic;">--Null</td>

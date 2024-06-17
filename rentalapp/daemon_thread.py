@@ -5,7 +5,6 @@ import time
 def background_task():
     from .models import Tenancy
     while True:
-        print("Hey Background task is running...")
         time.sleep(10)  # Adjust sleep time as needed
 
 class DaemonThread(threading.Thread):
