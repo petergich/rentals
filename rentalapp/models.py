@@ -85,7 +85,7 @@ class Tenancy(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True)
-    last_charged=models.DateField(auto_now_add=True,null=True)
+    last_charged=models.DateField(null=True)
     arrears=models.IntegerField(default=0)
     def __str__(self):
         return self.tenant.name

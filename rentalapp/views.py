@@ -12,7 +12,7 @@ from django.conf import settings
 import os
 import logging
 import datetime
-from datetime import datetime
+from datetime import datetime,timedelta
 from dateutil.relativedelta import relativedelta
 message=""
 def home(request):
@@ -255,7 +255,6 @@ def rooms(request):
 #view for adding a tenant to a given room
 @login_required(login_url="ownerslogin")
 def addtenant(request):
-    print("clicked")
     if request.method=="POST":
         room=request.GET.get("room")
         if room:
@@ -263,7 +262,7 @@ def addtenant(request):
             name=request.POST.get("name")
             idnumber=request.POST.get("idnumber")
             phone=request.POST.get("phone")
-            print(date_str)
+            
             date = datetime.strptime(date_str, '%Y-%m-%d')
             if Tenant.objects.filter(tenant_id=idnumber).exists():
                 ten=Tenant.objects.get(tenant_id=idnumber)
@@ -293,16 +292,22 @@ def addtenant(request):
             period_type=""
             if Room.objects.get(id=room).rate=="daily":
                 period_type="daily"
+                per="date"
+            if Room.objects.get(id=room).rate=="weekly":
+                period_type="weekly"
+                per="week"
             if Room.objects.get(id=room).rate=="monthly":
                 period_type="monthly"
+                per="month"
             if Room.objects.get(id=room).rate=="yearly":
                 period_type="yearly"
+                per="year"
             start_date=date.strftime('%Y-%m-%d')
             end_date_str = add_period(date, 1, period_type)
             Rent.objects.create(
                 amount=Room.objects.get(id=room).price,
                 tenancy=Tenancy.objects.get(is_current=True,room=Room.objects.get(id=room)),
-                name=f"Rent for {start_date} to {end_date_str}", 
+                name=f"Rent for {per}  {start_date} to {end_date_str}", 
                 start_date=date
             )
         else:
@@ -313,7 +318,7 @@ def addtenant(request):
         for ten in tenancies:
             if ten.is_current:
                 return redirect("rooms")
-        return render(request,"addtenant.html",{"room":room})
+        return render(request,"addtenant.html",{"room":room,"room_obj":Room.objects.get(id=room)})    
     else:
         return redirect("rooms")
 #View for displaying a given room in a given house
@@ -323,7 +328,7 @@ def room(request):
         
         owner=Owner.objects.get(user=request.user)
         roomid=request.GET.get("room")
-        print(roomid)
+        
         room=Room.objects.get(id=roomid)
         
         if status(room):
@@ -337,6 +342,37 @@ def room(request):
 @login_required(login_url="ownerslogin")
 def ownersprofile(request):
     return render(request, "ownersprofile.html")
+#view for dealing with displaying the rents and everything
+@login_required(login_url="ownerslogin")
+def charges(request):
+    if isowner(request):
+        houses= owner_houses(Owner.objects.get(user=request.user))
+        charges=Rent.objects.all()
+        obj=[]
+        tenants=Tenancy.objects.all()
+        for house in houses:
+            tenancies=[]
+            for ten in tenants:
+                if ten.room.house==house:
+                   tenant_charges=[]
+                   total=0
+                   unpaid=0
+                   paid=0
+                   for charge in charges:
+                       if charge.tenancy==ten and charge.tenancy.room.house==house and charge.cleared==False:
+                           tenant_charges.append({"charge":charge,"unpaid":charge.amount-charge.amount_paid})
+                           total=total+charge.amount
+                           paid=paid+charge.amount_paid
+                           unpaid=unpaid+(charge.amount-charge.amount_paid)
+                   if tenant_charges!=[]:
+                        tenancies.append({"tenancy":ten,"charges":tenant_charges,"total":total,"unpaid":unpaid,"paid":paid})
+            if tenancies!=[]:
+                obj.append({"house":house,"tenancies":tenancies})
+        
+        return render(request,"charges.html",{"objects":obj})
+    else:
+        logout(request)
+        return redirect("ownerslogin")
 @login_required(login_url="ownerslogin")
 def removetenant(request):
     if isowner(request):
@@ -524,8 +560,15 @@ def htenants(house,cat):
         else:
             return False
 #function to find the end of the charging period mainly used when creating charges
-def add_period(date_str,num_months,period_type):
+def add_period(date_str,num,period_type):
     # Parse the date string to a datetime object
     # Add one month to the date object
-    new_date = date_str + relativedelta(months=num_months)
-    return new_date
+    if period_type=="daily":
+        return date_str + timedelta(days=num)
+    if period_type=="weekly":
+        return date_str + timedelta(weeks=num)
+    if period_type=="monthly":
+        new_date = date_str + relativedelta(months=num)
+        return new_date
+    if period_type=="yearly":
+        return date_str + relativedelta(years=num)

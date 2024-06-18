@@ -179,7 +179,7 @@
       </header>
       
       <main style="margin-top:15vh;">
-      
+       <H1 style="color:blue;text-align:center">RENTS/CHAGES<H1>
         <div class="scrollable-table">
           {% for house in objects%}
           <hr>
@@ -189,36 +189,48 @@
             <thead>
               <tr class="bg-info">
                 <th>TENANT NAME</th>
-                <th>TENANT ID</th>
                 <th>TENANT PHONE</th>
                 <th>ROOM</th>
                 <th>STATUS</th>
-                <th>ARREARS</th>
-                <th>START DATE</th>
-                <th>END DATE</th>
+                <th>RENT</th>
+                <th>PAID</th>
+                <th>UNPAID</th>
+                <th>TOTAL</th>
+                <th>RECEIVE RENT</th>
               </tr>
             </thead>
             <tbody>
-              {% for tenant in house.tenants %}
-               <tr class="table rooms-row" onclick="popup({{tenant.tenant.id}})">
-                <td style="font-size:14px">{{tenant.tenant.name}}</td>
-                <td style="font-size:14px">{{tenant.tenant.tenant_id}}</td>
-                <td style="font-size:14px">{{tenant.tenant.phone}}</td>
+              {% for tenant in house.tenancies %}
+               <tr class="table rooms-row"style="background:rgba(0,200,0,0.1)">
+                <td style="color:black;font-weight:bold;font-size:14px">{{tenant.tenancy.tenant.name}}</td>
+                <td style="color:black;font-weight:bold;font-size:14px">{{tenant.tenancy.tenant.phone}}</td>
                 
-                <td style="font-size:14px">{{tenant.room.house_number}}</td>
-                {% if tenant.is_current%}
-                <td style="color:black;font-size:14px;background-color:rgba(0,0,150,0.5);">active</td>
+                <td style="color:black;font-weight:bold;font-size:14px">{{tenant.tenancy.room.house_number}}</td>
+                {% if tenant.tenancy.is_current%}
+                <td style="color:black;font-weight:bold;font-size:14px;background-color:rgba(0,0,150,0.5);">active</td>
                 {% else %}
-                <td style="color:black;font-size:14px;background-color:rgba(150,30,30,0.5);">former</td>
+                <td style="color:black;font-weight:bold;font-size:14px;background-color:rgba(150,30,30,0.5);">former</td>
                 {% endif%}
-                <td style="font-size:14px">{{tenant.arrears}}KSH</td>
-                <td style="font-size:14px">{{tenant.start_date}}</td>
-                {% if tenant.end_date == Null%}
-                <td style="font-size:14px;font-style:italic;">--Null</td>
-                {% else%}
-                <td style="font-size:14px">{{tenant.end_date}}</td>
-                {% endif%}
+                <td style="color:black;font-weight:bold;font-size:14px">RENNT FOR {{tenant.tenancy.tenant.name}}</td>
+                <td style="color:black;font-weight:bold;font-size:14px">{{tenant.paid}}KSH</td>
+                <td style="color:black;font-weight:bold;font-size:14px">{{tenant.unpaid}}KSH</td>
+                <td style="color:black;font-weight:bold;font-size:14px">{{tenant.total}}KSH</td>
+                <td style="font-size:14px"><a href="#">Receive payment</a></td>
               </tr>
+              {% for charge in tenant.charges%}
+              <tr class="table rooms-row"style="">
+                <td style="font-size:14px">--</td>
+                <td style="font-size:14px">--</td>
+                <td style="font-size:14px">--</td>
+                <td style="font-size:14px;">--</td>
+                <td style="font-size:14px">{{charge.charge.name}}</td>
+                <td style="font-size:14px">{{charge.charge.amount_paid}}KSH</td>
+                <td style="font-size:14px">{{charge.unpaid}}KSH</td>
+                <td style="font-size:14px">{{charge.charge.amount}}KSH</td>
+                <td style="font-size:14px"><a href="#">Receive payment</a></td>
+               
+              </tr>
+              {% endfor%}
               {% endfor %}
             </tbody>
           </table>

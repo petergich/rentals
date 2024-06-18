@@ -114,6 +114,11 @@
             </a>
           </li>
           <li>
+            <a href="{% url "charges"%}">
+              <span class="las la-clipboard-check"></span>
+              <span>Rent/charges</span>
+            </a>
+          <li>
             <a href="#">
               <span class="las la-clipboard-check"></span>
               <span>Bulk SMS</span>
@@ -152,6 +157,27 @@
         {% csrf_token %}
         <div class="card ">
           <h2 style="text-align:center;color:blue;">TENANT DETAILS</h2>
+          <table class="table">
+            <h3>Room</h3>
+            <thead>
+              <tr class="bg-info">
+                <th>ROOM NAME/NUMBER</th>
+                <th>TYPE</th>
+                <th>PAYMENT RATE</th>
+                <th>FLOOR</th>
+                <th>PRICE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:rgba(250,0,0,0.1);cursor:pointer;"class="table rooms-row" onclick="popup({{room.room.id}})">
+                <td style="font-size:14px">{{room_obj.house_number}}</td>
+                <td style="font-size:14px">{{room_obj.htype}}</td>
+                <td style="font-size:14px">{{room_obj.rate}}</td>
+                <td style="font-size:14px">{{room_obj.floor}}</td>
+                <td style="font-size:14px">{{room_obj.price}} KSH</td>
+              </tr>
+            </tbody>
+          </table>
             <div class="col-md-6">
                 <div class="input-field">
                   <label class="label">NAME</label><br>
