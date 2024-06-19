@@ -215,7 +215,7 @@
                 <td style="color:black;font-weight:bold;font-size:14px">{{tenant.paid}}KSH</td>
                 <td style="color:black;font-weight:bold;font-size:14px">{{tenant.unpaid}}KSH</td>
                 <td style="color:black;font-weight:bold;font-size:14px">{{tenant.total}}KSH</td>
-                <td style="font-size:14px"><a href="#">Receive payment</a></td>
+                <td style="font-size:14px"><a href="#">Receive payment</a><br><a href="#">Print invoice</a></td>
               </tr>
               {% for charge in tenant.charges%}
               <tr class="table rooms-row"style="">
@@ -227,7 +227,7 @@
                 <td style="font-size:14px">{{charge.charge.amount_paid}}KSH</td>
                 <td style="font-size:14px">{{charge.unpaid}}KSH</td>
                 <td style="font-size:14px">{{charge.charge.amount}}KSH</td>
-                <td style="font-size:14px"><a href="#">Receive payment</a></td>
+                <td style="font-size:14px"><a href="#">Receive payment</a><br><a href="#">Print invoice</a></td>
                
               </tr>
               {% endfor%}
