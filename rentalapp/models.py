@@ -102,6 +102,10 @@ class Payment(models.Model):
     rent=models.ForeignKey(Rent,on_delete=models.SET_NULL,null=True)
     amount=models.IntegerField()
     date=models.DateField()
+    def __str__(self):
+        return self.date
 class Extra(models.Model):
     amount=models.IntegerField()
     tenancy=models.ForeignKey(Tenancy,null="True",on_delete=models.SET_NULL)
+     def __str__(self):
+        return self.tenancy

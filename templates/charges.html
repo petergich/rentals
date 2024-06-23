@@ -176,6 +176,12 @@
         <small id="message"></small>
       </div>
   </div>
+  <div class="col-md-6">
+    <div class="input-field">
+        <label class="label" for="date">DATE PAID</label><br>
+        <input  type="date" name="date" required placeholder="Select a date">
+    </div>
+</div>
   <div style="display: flex; justify-content: center; align-items: center;">
     <button id="confirm"class="btn btn-success">Confirm</button>
   </div>
@@ -298,7 +304,7 @@
                 <td style="color:black;font-weight:bold;font-size:14px">{{tenant.paid}}KSH</td>
                 <td style="color:black;font-weight:bold;font-size:14px">{{tenant.tenancy.arrears}}KSH</td>
                 <td style="color:black;font-weight:bold;font-size:14px">{{tenant.total}}KSH</td>
-                <td style="font-size:14px"><span onclick="openPopup()"class="mylink"span>Receive payment</span><br><span class="mylink">Print invoice</span></td>
+                <td style="font-size:14px"><span onclick="openPopup1({{tenant.total}},{{tenant.tenancy.arrears}},{{tenant.tenancy.id}})"class="mylink"span>Receive payment</span><br><span class="mylink">Print invoice</span></td>
               </tr>
               {% for charge in tenant.charges%}
               <tr class="table rooms-row"style="">
@@ -344,10 +350,7 @@
             const currentValue = event.target.value;
             document.getElementById("message").innerHTML=""; 
             if (currentValue!="" ){
-            if (currentValue===""){
-              document.getElementById("message").innerHTML=""; 
-            }
-            if(currentValue<remaining && currentValue>0){
+            if(currentValue<=remaining && currentValue>0){
               but.disabled=false;
               document.getElementById("unpaid").innerHTML=remaining-currentValue;
               document.getElementById("message").innerHTML=""; 
@@ -361,6 +364,56 @@
               eror.innerHTML="Please enter amount equal or less than the unpaid ammount";
               eror.style.color="red";
             }
+          }
+
+          else{
+            document.getElementById("unpaid").innerHTML=remaining;
+            document.getElementById("message").innerHTML=""; 
+            but.disabled=true;
+          }
+           
+        });
+
+        }
+        function openPopup1(amount,remaining,id){
+          
+          const elem=document.getElementById("overlay");
+          elem.classList.remove("hide")
+          var form = document.getElementById("myform");
+    
+        // Set the form action based on input value or any other logic
+    
+          form.action = "{% url "charges"%}?tenancy="+encodeURIComponent(id);
+          document.getElementById("total").innerHTML=amount;
+          document.getElementById("unpaid").innerHTML=remaining;
+          var inputText = document.getElementById("inputText")
+          var but=document.getElementById("confirm");
+          but.disabled=true;
+          inputText.addEventListener('keyup', function(event) {
+            // Get the current value of the input field
+            const currentValue = event.target.value;
+            document.getElementById("message").innerHTML=""; 
+            if (currentValue!="" ){
+            if(currentValue>0){
+              but.disabled=false;
+              document.getElementById("unpaid").innerHTML=remaining-currentValue;
+              document.getElementById("message").innerHTML=""; 
+            // Display the current value in the displayText paragraph
+            }
+            
+            if(currentValue<1){
+              but.disabled=true;
+              document.getElementById("unpaid").innerHTML=remaining;
+              var eror=document.getElementById("message");
+              eror.innerHTML="Please enter amount equal or less than the unpaid ammount";
+              eror.style.color="red";
+            }
+          }
+
+          else{
+            document.getElementById("unpaid").innerHTML=remaining;
+            document.getElementById("message").innerHTML=""; 
+            but.disabled=true;
           }
            
         });

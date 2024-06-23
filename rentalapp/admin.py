@@ -9,4 +9,6 @@ admin.site.register(House)
 admin.site.register(Photo)
 admin.site.register(Room)
 admin.site.register(Rent)
+admin.site.register(Payment)
+admin.site.register(Extra)
 # Register your models here.

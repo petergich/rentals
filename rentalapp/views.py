@@ -350,13 +350,14 @@ def charges(request):
         #handling charges payments
         if request.method=="POST":
             charge = request.GET.get("charge")
+            tenancy = request.GET.get("tenancy")
             if charge:
                 charge_instance = Rent.objects.get(id=charge)
                 amount=request.POST.get("paidamount")
                 date=request.POST.get("date")
                 tenancy=charge_instance.tenancy
-                charge_instance.amount_paid=charge_instance.amount_paid+amount;
-                tenancy.arrears=tenancy.arrears-amount
+                charge_instance.amount_paid=charge_instance.amount_paid+int(amount);
+                tenancy.arrears=tenancy.arrears-int(amount)
                 try:
                     if charge_instance.amount_paid==charge_instance.amount:
                         charge_instance.cleared=True
@@ -368,14 +369,52 @@ def charges(request):
                 try:
                     Payment.objects.create(
                         rent=charge_instance,
-                        amount=amount,
+                        amount=int(amount),
                         date=date
                     )
                 except:
                     message="Not recorded please contact support"
-                    
+            if tenancy:
+                amount=int(request.POST.get("paidamount"))
+                date=request.POST.get("date");
+                tenancy=Tenancy.objects.get(id=tenancy)
+                rent_instances=Rent.objects.filter(tenancy=tenancy,cleared=False).order_by('start_date')
+                for rent in rent_instances:
+                    unpaid=rent.amount-rent.amount_paid
+                    if amount-unpaid>0:
+                        rent.amount_paid=rent.amount
+                        tenancy.arrears=tenancy.arrears-unpaid
+                        if rent.amount_paid==rent.amount:
+                            rent.cleared=True
+                        rent.save()
+                        tenancy.save()
+                        Payment.objects.create(
+                        rent=rent,
+                        amount=unpaid,
+                        date=date
+                        )
+                        amount=amount-unpaid
+                    else:
+                        rent.amount_paid=rent.amount_paid+amount
+                        tenancy.arrears=tenancy.arrears-amount
+                        if rent.amount_paid==rent.amount:
+                            rent.cleared=True
+                        rent.save()
+                        tenancy.save()
+                        Payment.objects.create(
+                        rent=rent,
+                        amount=amount,
+                        date=date
+                        )
+                        message="Successfull"
+                        break;
+                if amount>0:
+                    Extra.objects.create(
+                        amount=amount,
+                        tenancy=tenancy,
+                    )
         houses= owner_houses(Owner.objects.get(user=request.user))
-        charges=Rent.objects.all()
+        charges=Rent.objects.all().order_by("-start_date")
         obj=[]
         tenants=Tenancy.objects.all()
         for house in houses:
