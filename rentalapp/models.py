@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+# model for house owners
 class Owner(models.Model):
     name = models.CharField(max_length=254, blank=False)
     owner_id = models.IntegerField(unique=True)
@@ -98,3 +98,10 @@ class Rent(models.Model):
     start_date=models.DateField()
     def __str__(self):
         return self.name
+class Payment(models.Model):
+    rent=models.ForeignKey(Rent,on_delete=models.SET_NULL,null=True)
+    amount=models.IntegerField()
+    date=models.DateField()
+class Extra(models.Model):
+    amount=models.IntegerField()
+    tenancy=models.ForeignKey(Tenancy,null="True",on_delete=models.SET_NULL)

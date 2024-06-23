@@ -58,22 +58,19 @@
       .container {
         max-width: 100%;
         margin: auto;
-        padding: 20px;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         height: 80vh; /* Adjust the height as needed */
         overflow-y: auto; /* Enable vertical scrolling */
       }
       .input-field {
-        margin-bottom: 20px;
+        margin-bottom: 5px;
       }
       .input-field label {
-        display: block;
         font-weight: bold;
-        font-size: 30px;
+       
       }
       .input-field input, .input-field select {
-        width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -96,9 +93,95 @@
         text-align: left;
         border: 1px solid #ddd;
       }
+      .mylink{
+        color:blue;
+        cursor:pointer;
+      }
+      .mylink:hover{
+        color:black;
+        border:solid black 1px;
+        padding:1px;
+        border-radius:5px;
+      }
+      .hide{
+        display:none;
+      }
+      .overlay {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        z-index: 100000000;
+        background: rgba(100, 100, 100, 0.5);
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .popup {
+        
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display:block;
+        align-items: center;
+        justify-content: center;
+    }
+    .inline-content {
+      display: inline-block;
+      white-space: nowrap;
+      width:max-content;
+      padding:5px;
+  
+      color:black
+
+  }
+  .close-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+}
+.hide{
+  display:none;
+}
     </style>
   </head>
   <body>
+    <div id="overlay"class="overlay hide">
+      <div id="popup"class="popup">
+        <div style="display:flex;justify-content:space-between;">
+        <h2 class=""style="margin-left:20px;text-align:center;font:bold;">RECEIVE RENT</h2>
+        <span class="" onclick="closePopup()"><img src="{% static "images\close.png"%}"/></span>
+        </div>
+        <hr>
+        <div class="col-md-6">
+          <div class="input-field">
+           <h5 class="inline-content" >TOTAL AMOUNT:<span style="color:blue;" id="total"></span>KSH</h5>
+          </div>
+      </div>
+      <div class="col-md-6">
+        <div class="input-field">
+         <h5 class="inline-content">REMAINING AMOUNT:<span style="color:blue;"id="unpaid"></span>KSH</h5>
+        </div>
+    </div>
+    <form id="myform" method="POST">
+      {% csrf_token %}
+    <div class="col-md-6">
+      <div class="input-field">
+        <label class="inline-content label">AMOUNT TO PAY:</label><br>
+        <input id="inputText"type="number" name="paidamount" placeholder=" Enter the paid amount"><br>
+        <small id="message"></small>
+      </div>
+  </div>
+  <div style="display: flex; justify-content: center; align-items: center;">
+    <button id="confirm"class="btn btn-success">Confirm</button>
+  </div>
+</form>
+    </div>
+  </div>
     <input type="checkbox" id="nav-toggle" />
     <div class="sidebar">
       <div class="sidebar-brand">
@@ -213,9 +296,9 @@
                 {% endif%}
                 <td style="color:black;font-weight:bold;font-size:14px">RENNT FOR {{tenant.tenancy.tenant.name}}</td>
                 <td style="color:black;font-weight:bold;font-size:14px">{{tenant.paid}}KSH</td>
-                <td style="color:black;font-weight:bold;font-size:14px">{{tenant.unpaid}}KSH</td>
+                <td style="color:black;font-weight:bold;font-size:14px">{{tenant.tenancy.arrears}}KSH</td>
                 <td style="color:black;font-weight:bold;font-size:14px">{{tenant.total}}KSH</td>
-                <td style="font-size:14px"><a href="#">Receive payment</a><br><a href="#">Print invoice</a></td>
+                <td style="font-size:14px"><span onclick="openPopup()"class="mylink"span>Receive payment</span><br><span class="mylink">Print invoice</span></td>
               </tr>
               {% for charge in tenant.charges%}
               <tr class="table rooms-row"style="">
@@ -227,7 +310,7 @@
                 <td style="font-size:14px">{{charge.charge.amount_paid}}KSH</td>
                 <td style="font-size:14px">{{charge.unpaid}}KSH</td>
                 <td style="font-size:14px">{{charge.charge.amount}}KSH</td>
-                <td style="font-size:14px"><a href="#">Receive payment</a><br><a href="#">Print invoice</a></td>
+                <td style="font-size:14px"><span onclick="openPopup({{charge.charge.amount}},{{charge.unpaid}},{{charge.charge.id}})" class="mylink">Receive payment</span><br><span class="mylink">Print invoice</span></td>
                
               </tr>
               {% endfor%}
@@ -242,10 +325,52 @@
         <p style="text-align: center;">Copyright &#169; 2024 Lunertechs. All Rights Reserved.</p>
       </footer>
       <script>
-        function popup(roomid) {
-          const url = "#";
-          window.location.href = url;
-      }
+        function openPopup(amount,remaining,id){
+          
+          const elem=document.getElementById("overlay");
+          elem.classList.remove("hide")
+          var form = document.getElementById("myform");
+    
+        // Set the form action based on input value or any other logic
+    
+          form.action = "{% url "charges"%}?charge="+encodeURIComponent(id);
+          document.getElementById("total").innerHTML=amount;
+          document.getElementById("unpaid").innerHTML=remaining;
+          var inputText = document.getElementById("inputText")
+          var but=document.getElementById("confirm");
+          but.disabled=true;
+          inputText.addEventListener('keyup', function(event) {
+            // Get the current value of the input field
+            const currentValue = event.target.value;
+            document.getElementById("message").innerHTML=""; 
+            if (currentValue!="" ){
+            if (currentValue===""){
+              document.getElementById("message").innerHTML=""; 
+            }
+            if(currentValue<remaining && currentValue>0){
+              but.disabled=false;
+              document.getElementById("unpaid").innerHTML=remaining-currentValue;
+              document.getElementById("message").innerHTML=""; 
+            // Display the current value in the displayText paragraph
+            }
+            
+            if(currentValue>remaining || currentValue<1){
+              but.disabled=true;
+              document.getElementById("unpaid").innerHTML=remaining;
+              var eror=document.getElementById("message");
+              eror.innerHTML="Please enter amount equal or less than the unpaid ammount";
+              eror.style.color="red";
+            }
+          }
+           
+        });
+
+        }
+        function closePopup(){
+          const elem=document.getElementById("overlay");
+          elem.classList.add("hide");
+         
+        }
       </script>
       {% if messages %}
       <div class="messages">

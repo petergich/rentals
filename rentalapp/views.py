@@ -345,7 +345,35 @@ def ownersprofile(request):
 #view for dealing with displaying the rents and everything
 @login_required(login_url="ownerslogin")
 def charges(request):
+    message=""
     if isowner(request):
+        #handling charges payments
+        if request.method=="POST":
+            charge = request.GET.get("charge")
+            if charge:
+                charge_instance = Rent.objects.get(id=charge)
+                amount=request.POST.get("paidamount")
+                date=request.POST.get("date")
+                tenancy=charge_instance.tenancy
+                charge_instance.amount_paid=charge_instance.amount_paid+amount;
+                tenancy.arrears=tenancy.arrears-amount
+                try:
+                    if charge_instance.amount_paid==charge_instance.amount:
+                        charge_instance.cleared=True
+                    charge_instance.save()
+                    tenancy.save()
+                    message="Successfull"
+                except:
+                    message="Unable to receive payment please contact support"
+                try:
+                    Payment.objects.create(
+                        rent=charge_instance,
+                        amount=amount,
+                        date=date
+                    )
+                except:
+                    message="Not recorded please contact support"
+                    
         houses= owner_houses(Owner.objects.get(user=request.user))
         charges=Rent.objects.all()
         obj=[]
@@ -368,7 +396,8 @@ def charges(request):
                         tenancies.append({"tenancy":ten,"charges":tenant_charges,"total":total,"unpaid":unpaid,"paid":paid})
             if tenancies!=[]:
                 obj.append({"house":house,"tenancies":tenancies})
-        
+        if message!="":
+            return render(request,"charges.html",{"objects":obj,"message":message})
         return render(request,"charges.html",{"objects":obj})
     else:
         logout(request)
