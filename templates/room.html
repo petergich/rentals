@@ -151,8 +151,8 @@
 <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; gap: 10px;">
   <button onclick="removetenant('{{tenant.id}}')"class="btn btn-danger" style="padding: 10px 20px; font-size: 14px;">Vacate</button>
   <select id="action"style="padding: 5px 10px; font-size: 14px;">
-    <option value="clear" selected>Clear all charges</option>
-    <option value="dontclear">Don't clear</option>
+    <option value="clear" >Clear all charges</option>
+    <option value="dontclear" selected>Don't clear</option>
   </select>
 </div>
       </div>
@@ -216,7 +216,7 @@
         </ul>
         <ul class="bottom-menu">
           <li>
-            <a href="#">
+            <a href="{% url "logout"%}">
               <span class="las la-sign-out-alt"></span>
               <span>Logout</span>
             </a>

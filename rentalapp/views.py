@@ -21,7 +21,7 @@ def home(request):
 
 def user_logout(request):
     auth_logout(request)
-    return redirect("login")
+    return redirect("home")
 
 def ownersregister(request):
     if request.method=="POST":
@@ -221,12 +221,15 @@ def tenants(request):
         owner=Owner.objects.get(user=request.user)
         o_houses=owner_houses(owner)
         housetenants=[]
-        for house in o_houses:
-            tenants=htenants(house,"all")
-            if tenants:
-                housetenants.append({"house":house,"tenants":tenants})
-        if housetenants !=[]:
-            return render(request,"tenants.html",{"objects":housetenants})
+        if o_houses:
+            for house in o_houses:
+                tenants=htenants(house,"all")
+                if tenants:
+                    housetenants.append({"house":house,"tenants":tenants})
+            if housetenants !=[]:
+                return render(request,"tenants.html",{"objects":housetenants})
+            else:
+                return render(request,"tenants.html")
         else:
              return render(request,"tenants.html")
     else:
@@ -241,14 +244,17 @@ def rooms(request):
         house_id=request.GET.get("houseid")
         instances_rooms=Room.objects.filter(house__owner=owner)
         objects=[]
-        for house in o_houses:
-            i_rooms=[]
-            for instance in instances_rooms:
-                if instance.house==house:
-                    i_rooms.append({"room":instance,"status":status(instance)})
-            if i_rooms!=[]:
-                objects.append({"house":house,"rooms":i_rooms})
-        return render(request, "rooms.html",{"objects":objects})
+        if o_houses:
+            for house in o_houses:
+                i_rooms=[]
+                for instance in instances_rooms:
+                    if instance.house==house:
+                        i_rooms.append({"room":instance,"status":status(instance)})
+                if i_rooms!=[]:
+                    objects.append({"house":house,"rooms":i_rooms})
+            return render(request, "rooms.html",{"objects":objects})
+        else:
+            return render(request, "rooms.html")
     except:
          logout(request)
          return redirect("ownerslogin")
@@ -355,14 +361,14 @@ def charges(request):
                 charge_instance = Rent.objects.get(id=charge)
                 amount=request.POST.get("paidamount")
                 date=request.POST.get("date")
-                tenancy=charge_instance.tenancy
+                i_tenancy=charge_instance.tenancy
                 charge_instance.amount_paid=charge_instance.amount_paid+int(amount);
-                tenancy.arrears=tenancy.arrears-int(amount)
+                i_tenancy.arrears=i_tenancy.arrears-int(amount)
                 try:
                     if charge_instance.amount_paid==charge_instance.amount:
                         charge_instance.cleared=True
                     charge_instance.save()
-                    tenancy.save()
+                    i_tenancy.save()
                     message="Successfull"
                 except:
                     message="Unable to receive payment please contact support"
@@ -417,27 +423,30 @@ def charges(request):
         charges=Rent.objects.all().order_by("-start_date")
         obj=[]
         tenants=Tenancy.objects.all()
-        for house in houses:
-            tenancies=[]
-            for ten in tenants:
-                if ten.room.house==house:
-                   tenant_charges=[]
-                   total=0
-                   unpaid=0
-                   paid=0
-                   for charge in charges:
-                       if charge.tenancy==ten and charge.tenancy.room.house==house and charge.cleared==False:
-                           tenant_charges.append({"charge":charge,"unpaid":charge.amount-charge.amount_paid})
-                           total=total+charge.amount
-                           paid=paid+charge.amount_paid
-                           unpaid=unpaid+(charge.amount-charge.amount_paid)
-                   if tenant_charges!=[]:
-                        tenancies.append({"tenancy":ten,"charges":tenant_charges,"total":total,"unpaid":unpaid,"paid":paid})
-            if tenancies!=[]:
-                obj.append({"house":house,"tenancies":tenancies})
-        if message!="":
-            return render(request,"charges.html",{"objects":obj,"message":message})
-        return render(request,"charges.html",{"objects":obj})
+        if houses:
+            for house in houses:
+                tenancies=[]
+                for ten in tenants:
+                    if ten.room.house==house:
+                        tenant_charges=[]
+                        total=0
+                        unpaid=0
+                        paid=0
+                        for charge in charges:
+                            if charge.tenancy==ten and charge.tenancy.room.house==house and charge.cleared==False:
+                                tenant_charges.append({"charge":charge,"unpaid":charge.amount-charge.amount_paid})
+                                total=total+charge.amount
+                                paid=paid+charge.amount_paid
+                                unpaid=unpaid+(charge.amount-charge.amount_paid)
+                        if tenant_charges!=[]:
+                            tenancies.append({"tenancy":ten,"charges":tenant_charges,"total":total,"unpaid":unpaid,"paid":paid})
+                if tenancies!=[]:
+                    obj.append({"house":house,"tenancies":tenancies})
+            if message!="":
+                return render(request,"charges.html",{"objects":obj,"message":message})
+            return render(request,"charges.html",{"objects":obj})
+        else:
+            return render(request,"charges.html")
     else:
         logout(request)
         return redirect("ownerslogin")
